@@ -1,12 +1,12 @@
 
-from dataclasses import dataclass
 
-@dataclass
 class Bid:
     
-    # default values represent the state of the initial bid in the game
-    face_value: int = 1
-    quantity:   int = 0
+    def __init__(self, face: int, quantity: int):
+        self._ensure_valid_bid(face, quantity)
+    
+        self.face_value: int = face
+        self.quantity:   int = quantity
 
 
     def __gt__(self, other: Bid) -> bool:
@@ -16,3 +16,10 @@ class Bid:
         if self.face_value == other.face_value:
             return self.quantity > other.quantity
         return self.face_value > other.face_value
+    
+    @staticmethod
+    def _ensure_valid_bid(face: int, quantity: int):
+        if not (1 <= face <= 6) or quantity < 1:
+            raise ValueError(f"Illegal bid values. Face 1-6, quantity >= 1, ")
+        
+        

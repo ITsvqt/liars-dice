@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 class LiarsDiceRules:
     
     @classmethod
-    def is_bid_valid(cls, bid: Bid, face_count: dict[int,int], wild_ones: bool = False) -> bool:
+    def is_bid_correct(cls, bid: Bid, face_count: dict[int,int], wild_ones: bool = False) -> bool:
         """Bid is valid if dice quantity for die face - is not greater than the actual."""
         dice_cnt_for_bid_face = face_count[bid.face_value]
         
