@@ -5,7 +5,7 @@ class AIPlayer(Player):
     
     def __init__(self, name: str, aggression: float):
         super().__init__(name)
-        self. aggression = aggression
+        self.aggression = aggression
         
     def take_turn(self):
         if True:

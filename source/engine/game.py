@@ -1,5 +1,6 @@
 
 import random
+from collections import Counter
 from utility import try_parse_int
 from player.human_player import HumanPlayer
 from player.ai_player import AIPlayer
@@ -21,6 +22,8 @@ class Game:
     
     def __init__(self):
         self.players: list[Player] = []
+        self.all_dice_values: Counter = None
+        self.curr_player_idx = 0
         
         self.set_up()
         
@@ -33,7 +36,6 @@ class Game:
 
     def game_loop(self):
         
-        curr_player_idx = 0
         while True:
             ...
             
