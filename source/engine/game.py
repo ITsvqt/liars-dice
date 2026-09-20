@@ -21,18 +21,30 @@ ai_players = {
 class Game:
     
     def __init__(self):
-        self.players: list[Player] = []
+        self.players: dict[int, Player] = self.set_up()
+        
+        #! use scope var instead
         self.all_dice_values: Counter = None
-        self.curr_player_idx = 0
         
-        self.set_up()
+        self.turn_cnt = 0
+        
+        #!: use list mb 
+        self.active_players: set = {i for i in range(len(self.players))}
         
         
-    def set_up(self):
-        self._add_human_player()
-        self._add_ai_players()
+    def set_up(self) -> dict[int, Player]:
+        """Create players, return player_idx:Player """
         
-        random.shuffle(self.players)
+        player_list: list[Player] = (
+            [self._create_human_player()]
+            + self._create_ai_players()
+        )
+        
+        return {
+            i: p
+            for i, p
+            in enumerate(random.shuffle(player_list))
+        }
 
     def game_loop(self):
         
@@ -47,13 +59,12 @@ class Game:
 
 
 
-    def _add_human_player(self):
+    def _create_human_player(self) -> Player:
         humanp_name = input("Enter your battle name (Captain): ")
-        self.players.append(HumanPlayer(humanp_name))
+        return HumanPlayer(humanp_name)
         
         
-    def _add_ai_players(self):
-        
+    def _create_ai_players(self) -> list[Player]:
         while True:
             try:
                 aip_cnt = try_parse_int(input("Enter count of AI enemies [1:5](2): "))
@@ -63,8 +74,11 @@ class Game:
             except ValueError as e:
                 print(e.args[0])
                 
-        for ai_token in random.sample(list(ai_players.items()), aip_cnt):
-            self.players.append(AIPlayer(ai_token[0], ai_token[1]))
+        return [
+            AIPlayer(name, aggression)
+            for name, aggression
+            in random.sample(list(ai_players.items()), aip_cnt)
+            ]
                 
                 
         
