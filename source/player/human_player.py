@@ -1,7 +1,8 @@
 from player.base.player import Player
 
 
-class Human(Player):
+class HumanPlayer(Player):
     
     def take_turn(self):
-        ...
+        if True:
+            ...
