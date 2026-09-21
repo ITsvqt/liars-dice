@@ -1,13 +1,13 @@
 
 import random
 from collections import Counter
-from utility import try_parse_int
-from player.human_player import HumanPlayer
-from player.ai_player import AIPlayer
+from utility.parsing import try_parse_int
+from models.player.human_player import HumanPlayer
+from models.player.ai_player import AIPlayer
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from player.base.player import Player
+    from source.models.player.base.player import Player
 
 ai_players = {
     "Captain Blackbeard"     : 0.75, # big bluffer
@@ -28,8 +28,7 @@ class Game:
         
         self.turn_cnt = 0
         
-        #!: use list mb 
-        self.active_players: set = {i for i in range(len(self.players))}
+        self.active_players: list[int] = [i for i in range(len(self.players))]
         
         
     def set_up(self) -> dict[int, Player]:
@@ -46,15 +45,28 @@ class Game:
             in enumerate(random.shuffle(player_list))
         }
 
+
     def game_loop(self):
         
-        while True:
+        starting_player_idx = 0
+        while True: # while len(active_player) != 1:
+            #self._play_round(starting_player_idx)
+            player_order = [idx for idx in self.active_players]
             ...
+            #TODO : doubly linked circular list for data
+            #TODO : pick bots, and then ask user for unique name
             
-            
-            #TODO : 1st turn index 0 in player's list
             #TODO : loser of round starts firts in the next round
             #TODO : if loser gets eliminated, next index in the player's list is first
+            
+            #TODO : implement human.take_turn
+            #TODO : implement AI.take_turn
+
+            
+
+        
+        
+        
             
 
 

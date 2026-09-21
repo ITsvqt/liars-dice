@@ -2,7 +2,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from core.bid import Bid
+    from models.bid import Bid
 
 class LiarsDiceRules:
     

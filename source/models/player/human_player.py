@@ -1,4 +1,4 @@
-from player.base.player import Player
+from models.player.base.player import Player
 
 
 class HumanPlayer(Player):
