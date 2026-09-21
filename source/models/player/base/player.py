@@ -1,4 +1,4 @@
-from source.models.dice import Dice
+from models.dice import Dice
 from abc import ABC, abstractmethod
 
 class Player(ABC):

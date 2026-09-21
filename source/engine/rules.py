@@ -1,8 +1,9 @@
-
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from models.bid import Bid
+    from engine.player_circle import PlayerCircle
 
 class LiarsDiceRules:
     
@@ -15,4 +16,9 @@ class LiarsDiceRules:
             dice_cnt_for_bid_face += face_count[1]
         
         return dice_cnt_for_bid_face >= bid.quantity
+    
+    @classmethod
+    def is_game_over(cls, players: PlayerCircle):
+        """Game ends when 1 player is remaining"""
+        return players.count == 1
         
