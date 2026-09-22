@@ -7,6 +7,9 @@ if TYPE_CHECKING:
 
 class LiarsDiceRules:
     
+    CNT_MIN_PLAYERS = 2
+    CNT_MAX_PLAYER = 5
+    
     @classmethod
     def is_bid_correct(cls, bid: Bid, face_count: dict[int,int], wild_ones: bool = False) -> bool:
         """Bid is valid if dice quantity for die face - is not greater than the actual."""
@@ -21,4 +24,6 @@ class LiarsDiceRules:
     def is_game_over(cls, players: PlayerCircle):
         """Game ends when 1 player is remaining"""
         return players.count == 1
+    
+    
         

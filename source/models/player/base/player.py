@@ -37,7 +37,7 @@ class Player(ABC):
         self.hand.pop()
 
     def __str__(self):
-        return f"[{type(self).__name__}] {self.name}"
+        return f"{f"[{type(self).__name__}]"} {self.name}"
     
     
     def _ensure_hand_is_not_empty(self, call_func: function):
@@ -45,5 +45,5 @@ class Player(ABC):
         if self.cnt_die == 0:
             raise ValueError(
                 f"[{type(self).__name__}."
-                f"{func.__name__}] Error: Player\'s hand is empty !"
+                f"{call_func.__name__}] Error: Player\'s hand is empty !"
                 )
