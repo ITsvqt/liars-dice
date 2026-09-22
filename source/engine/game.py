@@ -1,15 +1,18 @@
 
 import random
 from collections import Counter
+from typing import TYPE_CHECKING
+
+from engine.player_circle import PlayerCircle
+from engine.rules import LiarsDiceRules
 from utility.parsing import try_parse_int
 from models.player.human_player import HumanPlayer
 from models.player.ai_player import AIPlayer
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from source.models.player.base.player import Player
+    from models.player.base.player import Player
 
-ai_players = {
+AI_PLAYERS = {
     "Captain Blackbeard"     : 0.75, # big bluffer
     "Naga Seawitch"          : 0.55, # balanced
     "Devil Itslef"           : 0.66, # a bit cocky
@@ -21,37 +24,32 @@ ai_players = {
 class Game:
     
     def __init__(self):
-        self.players: dict[int, Player] = self.set_up()
-        
+        self.players: list[Player] = self._set_up()
+        self.player_circle = PlayerCircle(self.players)
         #! use scope var instead
         self.all_dice_values: Counter = None
         
         self.turn_cnt = 0
         
-        self.active_players: list[int] = [i for i in range(len(self.players))]
         
         
-    def set_up(self) -> dict[int, Player]:
-        """Create players, return player_idx:Player """
+    def _set_up(self) -> list[Player]:
+        """Create players and return them in shuffled order."""
         
+        #todo: use name as UID, by first creating bots and then asking for player name
         player_list: list[Player] = (
             [self._create_human_player()]
             + self._create_ai_players()
         )
         
-        return {
-            i: p
-            for i, p
-            in enumerate(random.shuffle(player_list))
-        }
-
+        random.shuffle(player_list)
+        return player_list
+        
 
     def game_loop(self):
-        
-        starting_player_idx = 0
-        while True: # while len(active_player) != 1:
-            #self._play_round(starting_player_idx)
-            player_order = [idx for idx in self.active_players]
+
+        while True:
+
             ...
             #TODO : doubly linked circular list for data
             #TODO : pick bots, and then ask user for unique name
@@ -79,9 +77,10 @@ class Game:
     def _create_ai_players(self) -> list[Player]:
         while True:
             try:
-                aip_cnt = try_parse_int(input("Enter count of AI enemies [1:5](2): "))
+                max_ai_cnt = LiarsDiceRules.CNT_MAX_PLAYER - 1
+                aip_cnt = try_parse_int(input(f"Enter count of AI enemies [1:{max_ai_cnt}](2): "))
                 if not 1 <= aip_cnt <= 5:
-                    raise ValueError(f"Illegal opponents count[1:5]: {aip_cnt}")
+                    raise ValueError(f"Illegal opponents count[1:{max_ai_cnt}]: {aip_cnt}")
                 break
             except ValueError as e:
                 print(e.args[0])
@@ -89,7 +88,7 @@ class Game:
         return [
             AIPlayer(name, aggression)
             for name, aggression
-            in random.sample(list(ai_players.items()), aip_cnt)
+            in random.sample(list(AI_PLAYERS.items()), aip_cnt)
             ]
                 
                 
