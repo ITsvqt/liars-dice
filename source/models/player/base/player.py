@@ -1,13 +1,34 @@
-from models.dice import Dice
+
 from abc import ABC, abstractmethod
+
+from models.dice import Dice
+from engine.rules import LiarsDiceRules
+
+class _Required:
+    """Just a unique type to check against, nothing more"""
+    pass
 
 class Player(ABC):
     
-    CNT_DICE = 5
-    
+    REQUIRES_UI_INPUT = _Required
+
+    def __init_subclass__(cls, **kwargs):
+        """Defensive check for overwriting required class constants in derived classes."""
+        super().__init_subclass__(**kwargs)
+        
+        required = [
+            name for name, value in vars(Player).items()
+            if value is _Required
+        ]
+        print(required)
+        for const in required:
+            if getattr(cls, const) is _Required:
+                raise TypeError(f"'{cls.__name__}' must define {const}")
+
+
     def __init__(self, name: str):
         self.name: str = name
-        self.hand: list[Dice] = [Dice() for _ in range(self.CNT_DICE)]
+        self.hand: list[Dice] = [Dice() for _ in range(LiarsDiceRules.CNT_DICE_PER_PLAYER)]
         
     @abstractmethod
     def take_turn(self):

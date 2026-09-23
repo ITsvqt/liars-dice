@@ -4,12 +4,16 @@ from models.bid import Bid
 from engine.game import Game
 from models.player.human_player import HumanPlayer
 from models.player.ai_player import AIPlayer
+from models.player.base.player import Player
+
 
 from engine.rules import LiarsDiceRules
 from engine.player_circle import PlayerCircle
 import time
 
-Game()
+
+# p1 = _Required
+# print(p1)
 # pc = PlayerCircle([HumanPlayer("ceci")])
 
 # pc = PlayerCircle([HumanPlayer("ceci"), AIPlayer("mechko",0.5), AIPlayer("toshko", 0.7)])

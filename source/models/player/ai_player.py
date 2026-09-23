@@ -3,6 +3,8 @@ from models.player.base.player import Player
 
 class AIPlayer(Player):
     
+    REQUIRES_UI_INPUT = False
+    
     def __init__(self, name: str, aggression: float):
         super().__init__(name)
         self.aggression = aggression
