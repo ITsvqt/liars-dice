@@ -1,4 +1,3 @@
-from utility.parsing import try_parse_int, try_parse_bool
 from models.dice import Dice
 from models.bid import Bid
 from engine.game import Game
@@ -11,6 +10,12 @@ from engine.rules import LiarsDiceRules
 from engine.player_circle import PlayerCircle
 import time
 
+
+from ui.terminal import TerminalUI
+
+t_ui = TerminalUI()
+g = Game(t_ui)
+g.game_loop()
 
 # p1 = _Required
 # print(p1)

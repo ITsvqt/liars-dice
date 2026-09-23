@@ -20,7 +20,6 @@ class Player(ABC):
             name for name, value in vars(Player).items()
             if value is _Required
         ]
-        print(required)
         for const in required:
             if getattr(cls, const) is _Required:
                 raise TypeError(f"'{cls.__name__}' must define {const}")
@@ -30,13 +29,11 @@ class Player(ABC):
         self.name: str = name
         self.hand: list[Dice] = [Dice() for _ in range(LiarsDiceRules.CNT_DICE_PER_PLAYER)]
         
-    @abstractmethod
-    def take_turn(self):
-        ...
         
     @property
     def cnt_dice(self) -> int:
         return len(self.hand)
+    
     
     @property
     def values(self) -> list[int]:
@@ -45,12 +42,15 @@ class Player(ABC):
         
         return [d.value for d in self.hand]
     
-    def is_hand_empty(self) -> bool:
-        return len(self.hand) == 0
     
     def roll(self):
         for die in self.hand:
             die.roll()
+    
+    
+    def is_hand_empty(self) -> bool:
+        return len(self.hand) == 0
+    
     
     def remove_die(self):
         self._ensure_hand_is_not_empty(self.remove_die)
@@ -63,7 +63,7 @@ class Player(ABC):
     
     def _ensure_hand_is_not_empty(self, call_func: function):
         #- tested raiseError on invalid data
-        if self.cnt_die == 0:
+        if self.cnt_dice == 0:
             raise ValueError(
                 f"[{type(self).__name__}."
                 f"{call_func.__name__}] Error: Player\'s hand is empty !"

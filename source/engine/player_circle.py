@@ -1,4 +1,5 @@
 from __future__ import annotations
+from collections import Counter
 from dataclasses import dataclass
 from typing import Optional, TYPE_CHECKING
 
@@ -54,10 +55,24 @@ class PlayerCircle:
     def advance(self):
         self._current_player = self._current_player.next
         
+    def get_players_dice_face_cnt(self) -> Counter[int, int]:
+        #- tested current player not changed after looping through all player to roll
+        #- tested expected sum of face occurence == count of player dice
+        #- briefly looked on the random values
+        """Make all players roll and return summary of dice face cnt"""
+        result = Counter()
+        for _ in range(self._count):
+            p = self.current_player
+            p.roll()
+            result.update(p.values)
+            print(p.name)
+            self.advance()
+
+        return result
+        
 
     def _build_player_circle(self, players: list[Player]):
 
-        
         prev_node = PlayerNode(players[0])
         self._current_player = prev_node
         

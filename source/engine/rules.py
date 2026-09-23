@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from collections import Counter
     from models.bid import Bid
     from engine.player_circle import PlayerCircle
 
@@ -11,8 +12,8 @@ class LiarsDiceRules:
     CNT_MAX_PLAYER = 5
     CNT_DICE_PER_PLAYER = 5
     
-    @classmethod
-    def is_bid_correct(cls, bid: Bid, face_count: dict[int,int], wild_ones: bool = False) -> bool:
+    @staticmethod
+    def is_bid_correct(bid: Bid, face_count: Counter[int,int], wild_ones: bool = False) -> bool:
         """Bid is valid if dice quantity for die face - is not greater than the actual."""
         dice_cnt_for_bid_face = face_count[bid.face_value]
         
@@ -21,8 +22,8 @@ class LiarsDiceRules:
         
         return dice_cnt_for_bid_face >= bid.quantity
     
-    @classmethod
-    def is_game_over(cls, players: PlayerCircle):
+    @staticmethod
+    def is_game_over(players: PlayerCircle):
         """Game ends when 1 player is remaining"""
         return players.count == 1
     
