@@ -1,6 +1,5 @@
 
 import random
-from collections import Counter
 from typing import TYPE_CHECKING
 
 from engine.player_circle import PlayerCircle
@@ -12,6 +11,7 @@ from models.player.ai_player import AIPlayer
 if TYPE_CHECKING:
     from models.player.base.player import Player
     from ui.base.ui import GameUI
+    from collections import Counter
 
 AI_PLAYERS = {
     "Captain Blackbeard"     : 0.75, # big bluffer
@@ -27,36 +27,59 @@ class Game:
     def __init__(self, ui: GameUI):
         
         self.ui = ui
-        self.player_circle = PlayerCircle(self._set_up())
-        self.turn_cnt = 0
+        self.human_player: HumanPlayer = None
+        self.players:  list[Player] = self._set_up()
+        self.player_circle = PlayerCircle(self.players)
+        self.turn_cnt: int = 0
         
 
         
 
     def game_loop(self):
 
-        cnt = 0
         while not LiarsDiceRules.is_game_over(self.player_circle):
             self._play_round()
-            
-            if cnt > 5:
-                break
-            cnt += 1
-            print()
-            print('-----------')
-            print()
-            
-            #TODO : doubly linked circular list for data
-            #TODO : pick bots, and then ask user for unique name
-            
-            #TODO : loser of round starts firts in the next round
-            #TODO : if loser gets eliminated, next index in the player's list is first
-            
-            #TODO : implement human.take_turn
-            #TODO : implement AI.take_turn
+
 
     def _play_round(self):
-        print(self.player_circle.get_players_dice_face_cnt().items())
+        
+        #setup
+        dice_face_cnt: Counter = self.player_circle.get_players_dice_roll_face_cnt()
+        dice_cnt = sum(dice_face_cnt.values())
+        
+        current_bid = None        
+        
+        #action
+        while True:
+            """Until players call previous is bluffing"""
+            player = self.player_circle.current_player
+            
+            while True:
+                """Until valid move"""
+                
+                # move: tuple[str, Bid | None] => ("Call", None); ("Bid", Bid)
+                if player.IS_BOT:
+                    move = player.take_turn(current_bid)
+                else:
+                    move = self.ui.ask_move(current_bid)
+                
+            
+                
+            
+                
+                
+            
+        
+        
+        print(self.player_circle.get_players_dice_roll_face_cnt().items())
+        #: get dict of dice face values
+        #TODO: ask player to make a turn, make bid or call out
+        #TODO: 1 . bid -> catch validation of invalid bid, catch validation of rules bid, show message and redo
+        #TODO:     player_circle.advance_player()
+        #TODO  2 . call_out -> determine who loses, the one calling bluff or the one who made the bid
+        #TODO:     decrease their dices 
+        #* struct handles that just provide the flag on removing
+        
 
 
     def _set_up(self) -> list[Player]:
@@ -94,7 +117,9 @@ class Game:
             human_p_name = self.ui.ask_player_name("Captain")
             
             if human_p_name not in reserved_names:
-                return HumanPlayer(human_p_name)
+                h_p = HumanPlayer(human_p_name)
+                self.human_player = h_p
+                return 
                 
             self.ui.show_message(f"'{human_p_name}' is already taken")
         
