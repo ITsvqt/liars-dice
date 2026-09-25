@@ -3,7 +3,7 @@ from models.player.base.player import Player
 
 class AIPlayer(Player):
     
-    REQUIRES_UI_INPUT = False
+    IS_BOT = True
     
     def __init__(self, name: str, aggression: float):
         super().__init__(name)

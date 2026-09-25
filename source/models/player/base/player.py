@@ -10,7 +10,7 @@ class _Required:
 
 class Player(ABC):
     
-    REQUIRES_UI_INPUT = _Required
+    IS_BOT = _Required
 
     def __init_subclass__(cls, **kwargs):
         """Defensive check for overwriting required class constants in derived classes."""

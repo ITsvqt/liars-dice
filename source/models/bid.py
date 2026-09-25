@@ -30,4 +30,7 @@ class Bid:
         if not (1 <= face <= 6) or quantity < 1:
             raise ValueError(f"Illegal bid values. Face 1-6, quantity >= 1, ")
         
+    def __str__(self):
+        return f"Face: {self.face_value}\nQuantity: {self.quantity}"
+        
         
