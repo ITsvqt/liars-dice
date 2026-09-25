@@ -1,6 +1,6 @@
 from ui.base.ui import GameUI
 from models.bid import Bid
-from utility.type_parsing import try_parse_int, try_parse_bool
+from utility.type_parsing import try_parse_int, try_parse_bool # todo : add the wild ones
 
 class TerminalUI(GameUI):
     
@@ -28,7 +28,7 @@ class TerminalUI(GameUI):
             if choice == 2:   #Challenge
                 return ("Challenge", None)
             
-        return ("Bid", self._ask_bid(current_bid))
+        return ("Bid", self._ask_bid())
                     
             
     def _ask_bid(self) -> tuple[int, int]:

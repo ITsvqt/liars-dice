@@ -11,6 +11,7 @@ class GameUI(ABC):
     
     @abstractmethod
     def ask_player_move(self, current_bid: Bid, player_dice: list[int], dice_cnt: int):
+        """UI should limit player for making Challenge move when there is no initial Bid"""
         ...
     
     @abstractmethod

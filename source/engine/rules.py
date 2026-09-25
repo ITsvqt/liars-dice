@@ -12,9 +12,14 @@ class LiarsDiceRules:
     CNT_MAX_PLAYER = 5
     CNT_DICE_PER_PLAYER = 5
     
+    #* version with max_dice_cnt in mind, honestly the game should enforce a challenge move
+    # @staticmethod
+    # def is_new_bid_valid(current: Bid, new: Bid, dice_cnt: int):
+    #     return (new.quantity <= dice_cnt) and (current < new)
+    
     @staticmethod
-    def is_new_bid_valid(current: Bid, new: Bid, dice_cnt: int):
-        return (new.quantity <= dice_cnt) and (current < new)
+    def is_new_bid_valid(current: Bid, new: Bid):
+        return current < new
     
     @staticmethod
     def is_bid_correct(bid: Bid, face_count: Counter[int,int], wild_ones: bool = False) -> bool:

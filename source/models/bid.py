@@ -31,6 +31,7 @@ class Bid:
             raise ValueError(f"Illegal bid values. Face 1-6, quantity >= 1, ")
         
     def __str__(self):
-        return f"Face: {self.face_value}\nQuantity: {self.quantity}"
+        face_names = {1: "Ones", 2: "Twos", 3: "Threes", 4: "Fours", 5: "Fives", 6: "Sixes"}
+        return f"{self.quantity}x{face_names[self.face_value]}"
         
         

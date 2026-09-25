@@ -24,10 +24,12 @@ AI_PLAYERS = {
 
 class Game:
     
+    
+    
     def __init__(self, ui: GameUI):
         
         self.ui = ui
-        self.human_player: HumanPlayer = None
+        self.human_player: HumanPlayer = None #! the idea was to display the hand of this player, but the refference ended up useless for now ( check the game loop if its not there, its useless)
         self.players:  list[Player] = self._set_up()
         self.player_circle = PlayerCircle(self.players)
         self.turn_cnt: int = 0
@@ -61,19 +63,17 @@ class Game:
                 if player.IS_BOT:
                     move = player.take_turn(current_bid)
                 else:
-                    move = self.ui.ask_move(current_bid)
+                    move = self.ui.ask_player_move(current_bid, player.values, dice_cnt)
+                    
+                # The UI should control not doing Challenge move when there is no bid,
+                #
+                if (current_bid is None) and move[0] == "Challenge":
+                    
+                    self.ui.show_message()
                 
-            
-                
-            
-                
-                
-            
-        
-        
-        print(self.player_circle.get_players_dice_roll_face_cnt().items())
+
         #: get dict of dice face values
-        #TODO: ask player to make a turn, make bid or call out
+        #: ask player to make a turn, make bid or call out
         #TODO: 1 . bid -> catch validation of invalid bid, catch validation of rules bid, show message and redo
         #TODO:     player_circle.advance_player()
         #TODO  2 . call_out -> determine who loses, the one calling bluff or the one who made the bid

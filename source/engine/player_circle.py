@@ -34,6 +34,7 @@ class PlayerCircle:
     def current_player(self) -> Player:
         return self._current_player.value
     
+    
     @property
     def count(self) -> int:
         return self._count
@@ -55,12 +56,14 @@ class PlayerCircle:
     def advance(self):
         self._current_player = self._current_player.next
         
-    def get_players_dice_face_cnt(self) -> Counter[int, int]:
+    def get_players_dice_roll_face_cnt(self) -> Counter[int, int]:
         #- tested current player not changed after looping through all player to roll
         #- tested expected sum of face occurence == count of player dice
         #- briefly looked on the random values
         """Make all players roll and return summary of dice face cnt"""
+        
         result = Counter()
+        
         for _ in range(self._count):
             p = self.current_player
             p.roll()
@@ -84,6 +87,7 @@ class PlayerCircle:
         current_node.next = self._current_player
         self._current_player.prev = current_node
         
+        
     def _remove_player_from_circle(self, player_node:PlayerNode):
         """Removes eliminated player from the circle."""
         if self.count <= 1:
@@ -96,6 +100,7 @@ class PlayerCircle:
         prev_node.next = next_node
         player_node.next = player_node.prev = None
         self.count -= 1
+        
         
     @staticmethod
     def _ensure_valid_player_count(players: list[Player]):
