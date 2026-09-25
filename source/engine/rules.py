@@ -13,6 +13,10 @@ class LiarsDiceRules:
     CNT_DICE_PER_PLAYER = 5
     
     @staticmethod
+    def is_new_bid_valid(current: Bid, new: Bid, dice_cnt: int):
+        return (new.quantity <= dice_cnt) and (current < new)
+    
+    @staticmethod
     def is_bid_correct(bid: Bid, face_count: Counter[int,int], wild_ones: bool = False) -> bool:
         """Bid is valid if dice quantity for die face - is not greater than the actual."""
         dice_cnt_for_bid_face = face_count[bid.face_value]
