@@ -6,8 +6,7 @@ class TerminalUI(GameUI):
     
     
     
-    def ask_player_move(self, current_bid: Bid, player_dice: list[int], dice_cnt: int):
-        
+    def ask_player_move(self, current_bid: Bid, player_dice: list[int], dice_cnt: int):        
         print(f"Your hand : ({' '.join(list(map(str, player_dice)))})")
         print(f"Total dice count: {dice_cnt}")
         
@@ -32,10 +31,11 @@ class TerminalUI(GameUI):
                     
             
     def _ask_bid(self) -> tuple[int, int]:
+        """Returns (for_face, dice_cnt)"""
         cnt = self._ask_number("Quantity (how many dice)")
         face = self._ask_number("Face value (1-6)")
         
-        return (cnt,face)
+        return (face, cnt)
     
     
     @staticmethod
