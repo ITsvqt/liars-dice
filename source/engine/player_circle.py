@@ -1,5 +1,4 @@
 from __future__ import annotations
-from collections import Counter
 from dataclasses import dataclass
 from typing import Optional, TYPE_CHECKING
 
@@ -34,20 +33,25 @@ class PlayerCircle:
     def current_player(self) -> Player:
         return self._current_player.value
     
+    @property
+    def previous_player(self) -> Player:
+        return self._current_player.prev.value
+    
     
     @property
     def count(self) -> int:
         return self._count
 
 
-    def remove_player(self, previous: bool = False):
+    def remove_player(self, previous: bool):
         """Removes either the current or the previous player from the game circle based on the given boolean flag."""
         
         #if previous is eliminated, current player stays, because he is after him and should start the next round
         if previous is True:
-            self._remove_player_from_circle(self._current_player)
-        else: # remove current
-        # if current is removed we should advance the current and remove the previous
+            self._remove_node_from_circle(self._current_player.prev)
+            
+        else: # previous is False
+        # if current is removed we should advance the current player and remove the previous
         # this way the starting player of the next round is already set
             self.advance()
             self.remove_player(previous = True)
@@ -56,24 +60,7 @@ class PlayerCircle:
     def advance(self):
         self._current_player = self._current_player.next
         
-    def get_players_dice_roll_face_cnt(self) -> Counter[int, int]:
-        #- tested current player not changed after looping through all player to roll
-        #- tested expected sum of face occurence == count of player dice
-        #- briefly looked on the random values
-        """Make all players roll and return summary of dice face cnt"""
         
-        result = Counter()
-        
-        for _ in range(self._count):
-            p = self.current_player
-            p.roll()
-            result.update(p.values)
-            print(p.name)
-            self.advance()
-
-        return result
-        
-
     def _build_player_circle(self, players: list[Player]):
 
         prev_node = PlayerNode(players[0])
@@ -88,8 +75,8 @@ class PlayerCircle:
         self._current_player.prev = current_node
         
         
-    def _remove_player_from_circle(self, player_node:PlayerNode):
-        """Removes eliminated player from the circle."""
+    def _remove_node_from_circle(self, player_node:PlayerNode):
+        """Removes node from the linked list."""
         if self.count <= 1:
             raise ValueError("Removing player when 1 is remaining, game should have ended by now!")
         
