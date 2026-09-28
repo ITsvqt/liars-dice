@@ -9,7 +9,7 @@ class AIPlayer(Player):
         super().__init__(name)
         self.aggression = aggression
         
-    def take_turn(self):
+    def calc_turn(self):
         if True:
             ...
             
