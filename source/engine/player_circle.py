@@ -22,7 +22,8 @@ class PlayerCircle:
     """Circular doubly linked list of active players representing turn oreder."""
     
     def __init__(self, players: list[Player]):
-        self._ensure_valid_player_count(players)
+       
+        self._ensure_valid_player_count(players)  #! Found that data should be already validated, for what this method does
 
         self._current_player: PlayerNode = None
         self._count = len(players)
@@ -89,8 +90,10 @@ class PlayerCircle:
         self.count -= 1
         
         
+        
     @staticmethod
     def _ensure_valid_player_count(players: list[Player]):
+        """ Data should already be validated at this points. """
         if not players:
             raise ValueError(f"Player list cannot be None or empty. Received: {players}")
         
