@@ -37,6 +37,14 @@ class PlayerCircle:
     def previous_player(self) -> Player:
         return self._current_player.prev.value
     
+    @property
+    def all_players(self):
+        res = []
+        for _ in range(self._count):
+            res.append(self.current_player)
+            self.advance
+
+        return res
     
     @property
     def count(self) -> int:
@@ -86,7 +94,7 @@ class PlayerCircle:
         next_node.prev = prev_node
         prev_node.next = next_node
         player_node.next = player_node.prev = None
-        self.count -= 1
+        self._count -= 1
         
         
         
@@ -98,12 +106,21 @@ class PlayerCircle:
     
         if not CNT_MIN_PLAYERS <= len(players) <= CNT_MAX_PLAYER:
             raise ValueError(
-                f"Illegal player count to init circle"
+                f"[Error] Illegal player count to init circle"
                 f"[{CNT_MIN_PLAYERS}:{CNT_MAX_PLAYER}]."
                 f"Current count: {len(players)}\n"
                 f"Players:\n"
                 f"\t{'\n\t'.join([f"{i}.{str(p)}" for i, p in enumerate(players,1)])}"
                 )
+            
+    def __repr__(self):
+        res = [f"\tPlayers Circle [{self.count}]:"]
+        
+        for i in range(self.count):
+            res.append(f"\t\t[{i + 1}] {self.current_player}")
+            self.advance()
+            
+        return "\n".join(res)
             
         
 
