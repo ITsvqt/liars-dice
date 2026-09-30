@@ -1,7 +1,9 @@
 
 import random
 from typing import TYPE_CHECKING
+from collections import Counter
 
+from utility.constants import AI_PLAYERS, CNT_MAX_PLAYER
 from engine.player_circle import PlayerCircle
 from engine.rules import LiarsDiceRules
 from utility.type_parsing import try_parse_int
@@ -12,38 +14,51 @@ from models.bid import Bid
 if TYPE_CHECKING:
     from models.player.base.player import Player
     from ui.base.ui import GameUI
-    from collections import Counter
 
-AI_PLAYERS = {
-    "Captain Blackbeard"     : 0.75, # big bluffer
-    "Naga Seawitch"          : 0.55, # balanced
-    "Devil Itslef"           : 0.66, # a bit cocky
-    "The Pope"               : 0.33, # safe player
-    "Little Red Riding Hood" : 0.50  # dzen
-}
+
 
 
 class Game:
     
     
     
-    def __init__(self, ui: GameUI, wild_ones = False):
+    def __init__(self, ui: GameUI):
         
         self.ui = ui
+        
+        self.players:  list[Player] = None
+        self.player_circle: PlayerCircle = None
+        self.wild_ones = None
         self.human_player: HumanPlayer = None #! the idea was to display the hand of this player, but the refference ended up useless for now ( check the game loop if its not there, its useless)
-        self.players:  list[Player] = self._set_up()
-        self.player_circle = PlayerCircle(self.players)
-        self.wild_ones = wild_ones
-        
         self.turn_cnt: int = 0
+
+        self.ui.initiate()
+        self._set_up()
         
+    def _set_up(self):
+        config = self.ui.get_set_up_vars()
+        
+        #todo: refactor this 2 functions
+        #todo: add validation for player name , validation for cnt_players is in circle
+        #todo: keep going with the testing and 
+        all_players: list[Player] = self._create_ai_players(config["cnt_ai"])
+        human_player: Player = self._create_human_player(config["player_name"])
+        all_players.append(human_player)
+        
+        random.shuffle(all_players)
+        
+        self.players = all_players
+        self.player_circle = PlayerCircle(all_players)
+        self.wild_ones = config["wild_ones"]
+    
 
     def game_loop(self):
 
-        #todo : test game logic
+        
         while not LiarsDiceRules.is_game_over(self.player_circle):
             self._play_round()
 
+        self.ui.show_message(f"And the winned is: {self.player_circle.current_player.name}")
         #todo : what happens after this loop, who is the current player, is he the winner, 
 
     def _play_round(self):
@@ -58,6 +73,7 @@ class Game:
             
             move = self._get_valid_player_move(player, current_bid, dice_cnt)
             
+            #todo: show messages for move
             if move[0] == "Challenge":
                 break
             else: #move[0] == 'Bid'
@@ -90,7 +106,7 @@ class Game:
                 
                 #* Determine input source
                 if player.IS_BOT:
-                    move = player.calc_turn(current_bid)
+                    move = player.calc_turn(current_bid, dice_cnt, False)
                 else:
                     move = self.ui.ask_player_move(current_bid, player.values, dice_cnt)
 
@@ -110,10 +126,10 @@ class Game:
                             return (move[0], new_bid)
                         
                     except ValueError as e:
-                        self.ui.show_message(e[0])
+                        self.ui.show_message(e)
                         
                 else:
-                    raise ValueError(f"Program error: invalid move [{move}]")
+                    raise ValueError(f"Program error: Invalid move - action:[{move[0]}] bid [{move[1]}]")
         
         
     def _roll_and_collect_dice(self) -> Counter[int, int]:
@@ -133,24 +149,13 @@ class Game:
 
         return result
 
-    def _set_up(self) -> list[Player]:
-        """Create players and shuffle them in random order"""
-        
-        ai_players: list[Player] = self._create_ai_players()
-        human_player: Player = self._create_human_player([p.name for p in ai_players])
-        
-        ai_players.append(human_player)
-        
-        random.shuffle(ai_players)
-        return ai_players
+
     
-    
-    def _create_ai_players(self) -> list[Player]:
+    def _create_ai_players(self, count: int) -> list[Player]:
         
-        max_ai_cnt = LiarsDiceRules.CNT_MAX_PLAYER - 1
+        max_ai_cnt = CNT_MAX_PLAYER - 1
         
         while True:
-            aip_cnt = self.ui.ask_ai_count(1, max_ai_cnt, 2)
             
             if 1 <= aip_cnt <= max_ai_cnt:
                 return [
@@ -170,7 +175,7 @@ class Game:
             if human_p_name not in reserved_names:
                 h_p = HumanPlayer(human_p_name)
                 self.human_player = h_p
-                return 
+                return h_p
                 
             self.ui.show_message(f"'{human_p_name}' is already taken")
         

@@ -10,6 +10,20 @@ from abc import ABC, abstractmethod
 class GameUI(ABC):
     
     @abstractmethod
+    def initiate():
+        ...
+        
+    @abstractmethod
+    def get_set_up_vars():
+        """
+        Return:
+            cnt_ai: int
+            player_name: str
+            wild_ones: True | False
+        """
+        ...
+    
+    @abstractmethod
     def ask_player_move(self,
         current_bid: Bid,
         player_dice: list[int],
@@ -28,14 +42,6 @@ class GameUI(ABC):
     def ask_confirmation(self):
         ...
         
-    @abstractmethod
-    def ask_ai_count(self, min: int, max: int, suggestion: int) -> int:
-        ...
-        
-    @abstractmethod
-    def ask_player_name(self, suggestion: str) -> str:
-        ...
-
 
 
     

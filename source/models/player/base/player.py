@@ -2,7 +2,7 @@
 from abc import ABC, abstractmethod
 
 from models.dice import Dice
-from engine.rules import LiarsDiceRules
+from utility.constants import CNT_DICE_PER_PLAYER
 
 class _Required:
     """Just a unique type to check against, nothing more"""
@@ -27,7 +27,7 @@ class Player(ABC):
 
     def __init__(self, name: str):
         self.name: str = name
-        self.hand: list[Dice] = [Dice() for _ in range(LiarsDiceRules.CNT_DICE_PER_PLAYER)]
+        self.hand: list[Dice] = [Dice() for _ in range(CNT_DICE_PER_PLAYER)]
         
         
     @property

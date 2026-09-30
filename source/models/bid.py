@@ -13,6 +13,9 @@ class Bid:
     #- tested raiseError on invalid data
         """A bid is higher if quantity is greater for same face, or face is higher."""
         
+        if other is None:
+            return True
+        
         if not isinstance(other, Bid):
             raise ValueError(
                 f"[{type(self).__name__}."

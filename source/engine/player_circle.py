@@ -2,8 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional, TYPE_CHECKING
 
-
-from engine.rules import LiarsDiceRules
+from utility.constants import CNT_MIN_PLAYERS, CNT_MAX_PLAYER
 
 
 if TYPE_CHECKING:
@@ -93,17 +92,15 @@ class PlayerCircle:
         
     @staticmethod
     def _ensure_valid_player_count(players: list[Player]):
-        """ Data should already be validated at this points. """
+        """ Data should already be valid at this points. """
         if not players:
             raise ValueError(f"Player list cannot be None or empty. Received: {players}")
-        
-        min_cnt = LiarsDiceRules.CNT_MIN_PLAYERS
-        max_cnt = LiarsDiceRules.CNT_MAX_PLAYER
-        player_count = len(players)
-        
-        if not min_cnt <= player_count <= max_cnt:
+    
+        if not CNT_MIN_PLAYERS <= len(players) <= CNT_MAX_PLAYER:
             raise ValueError(
-                f"Illegal player count to init circle[{min_cnt}:{max_cnt}]. Current count: {player_count}\n"
+                f"Illegal player count to init circle"
+                f"[{CNT_MIN_PLAYERS}:{CNT_MAX_PLAYER}]."
+                f"Current count: {len(players)}\n"
                 f"Players:\n"
                 f"\t{'\n\t'.join([f"{i}.{str(p)}" for i, p in enumerate(players,1)])}"
                 )

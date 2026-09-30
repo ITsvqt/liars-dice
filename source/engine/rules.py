@@ -8,9 +8,6 @@ if TYPE_CHECKING:
 
 class LiarsDiceRules:
     
-    CNT_MIN_PLAYERS = 2
-    CNT_MAX_PLAYER = 5
-    CNT_DICE_PER_PLAYER = 5
     
     #* version with max_dice_cnt in mind, honestly the game should enforce a challenge move, honestly going beyond dice count is awesome
     # @staticmethod
@@ -19,7 +16,7 @@ class LiarsDiceRules:
     
     @staticmethod
     def is_new_bid_valid(current: Bid, new: Bid) -> bool:
-        return current < new
+        return new > current
     
     @staticmethod
     def is_challenge_correct(bid: Bid, face_count: Counter[int,int], wild_ones: bool = False) -> bool:
