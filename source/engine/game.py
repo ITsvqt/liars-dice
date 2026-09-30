@@ -3,7 +3,7 @@ import random
 from typing import TYPE_CHECKING
 from collections import Counter
 
-from utility.constants import AI_PLAYERS, CNT_MAX_PLAYER
+import utility.constants as const
 from engine.player_circle import PlayerCircle
 from engine.rules import LiarsDiceRules
 from utility.type_parsing import try_parse_int
@@ -37,7 +37,13 @@ class Game:
         self.ui.start_game(self.players, self.wild_ones)
         
     def _set_up(self):
-        config = self.ui.get_set_up_vars()
+        config = self.ui.get_set_up_vars(
+            const.CNT_MIN_PLAYERS - 1, # -1 for the human player
+            const.CNT_MAX_PLAYER - 1,      # -1 for the human player
+            const.SUGGESTION_AI_PLAYER_CNT,
+            {name for name in const.AI_PLAYERS.keys()}
+        )
+        print(repr(self))
         
         all_players: list[Player] = self._create_ai_players(config["cnt_ai"])
         human_player: Player = self._create_human_player(config["player_name"])

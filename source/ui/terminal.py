@@ -9,14 +9,12 @@ import time
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
-from rich.prompt import Prompt
+from rich.prompt import Prompt, IntPrompt, Confirm
 from rich import box
 
 
-import utility.constants as const
 from ui.base.ui import GameUI
 from models.bid import Bid
-from utility.type_parsing import try_parse_int, try_parse_bool
 
 class TerminalUI(GameUI):
     
@@ -52,6 +50,33 @@ class TerminalUI(GameUI):
             )
         )
         self.console.print()
+        
+    def get_set_up_vars(
+        self,
+        min_ai_cnt: int,
+        max_ai_cnt: int,
+        suggested_ai_cnt,
+        reserved_names: set[str]) -> dict:
+
+        setup = {}
+        
+        setup["cnt_ai"] = self._ask_number(
+            "[bold]How many AI opponents?[/bold] "
+            + f"[dim][{min_ai_cnt}:{max_ai_cnt}][/dim]"
+            + f"[cyan bold]({suggested_ai_cnt})[/cyan bold]",
+            min_ai_cnt,
+            max_ai_cnt,
+            "Please enter valid number of enemies"
+        )
+        setup["player_name"] = self._ask_player_name(reserved_names)
+        setup["wild_ones"] = self._ask_bool(
+            "[bold]Enable Wild Ones mode?[/bold] "
+            "[dim](1s count as any face)[/dim]",
+            False
+        )
+        
+
+        return setup
         
         
     def start_game(self, players: list[Player], wild_ones: bool):
@@ -173,19 +198,7 @@ class TerminalUI(GameUI):
         
         
         
-    def get_set_up_vars(self) -> dict:
 
-        setup = {}
-        
-        setup["cnt_ai"] = self._ask_ai_count(
-            const.CNT_MIN_PLAYERS - 1, # -1 for the human player
-            const.CNT_MAX_PLAYER - 1,  # -1 for the human player
-            const.SUGGESTION_AI_PLAYER_CNT
-            )
-        setup["player_name"] = self._ask_player_name(const.SUGGESTION_PLAYER_NAME)
-        setup["wild_ones"] = self._ask_wild_ones()
-        print()
-        return setup
         
         
         
@@ -228,8 +241,8 @@ class TerminalUI(GameUI):
             
     def _ask_bid(self) -> tuple[int, int]:
         """Returns (for_face, dice_cnt)"""
-        cnt = self._ask_number("Quantity (how many dice): ")
-        face = self._ask_number("Face value (1-6): ")
+        cnt = self._ask_number("Quantity (how many dice)")
+        face = self._ask_number("Face value (1-6)", 1, 6, "Please enter valid die face")
         
         return (face, cnt)
     
@@ -242,57 +255,49 @@ class TerminalUI(GameUI):
         self.console.print(msg)
         input()
         
-        
-    def _ask_ai_count(self, min_cnt: int, max_cnt: int, suggestion: int) -> int:
-        while not min_cnt <= (
-            number:= self._ask_number(f"Enter count of AI enemies [{min_cnt}:{max_cnt}]({suggestion}): ")
-        ) <= max_cnt:
-            
-            print("\tInvalid AI count!")
-            
-        return number
 
-
-    def _ask_player_name(self, suggestion: str) -> str:
-        reserved_names = {name for name in const.AI_PLAYERS.keys()}
+    def _ask_player_name(self, reserved_names: set[str]) -> str:
         
         while True:
-            self.console.print(
-                "[bold yellow]Your name, challenger[/bold yellow]"
-                f"[cyan]({suggestion})[/cyan]")
+            p_name = Prompt.ask("[bold yellow]Your name, challenger[/bold yellow]", default="Captain")
             
-            p_name = input()
-            
-            if not 0 < len(p_name) < 30:
-                print("\tCannot accept empty name!")
+            if len(p_name) > 15:
+                self._print_error("Name too long, max - 15")
                 continue
             if p_name in reserved_names:
-                print("\tName is reserved by AI player!")
+                self._print_error("Name is reserved by AI player")
                 continue
             
             return p_name
 
-            
-            
-    def _ask_wild_ones(self) -> bool:
-        while True:
-            try:
-                self.console.print(
-                    "[bold]Enable Wild Ones mode?[/bold] "
-                    "[dim](1s count as any face)[/dim]"
-                    "[magenta bold](y/n)[/magenta bold] "
-                    "[cyan bold](n)[/cyan bold]: "
-                    )
-                return try_parse_bool(input())
-            except ValueError:
-                print("[red]Please enter Y or N[/red]")
+         
+    def _ask_bool(self, msg: str, default: bool) -> bool:
+        return Confirm.ask(msg, case_sensitive=False, default = default)
 
 
-    def _ask_number(self, msg: str):
+    def _ask_number(
+        self,
+        msg: str,
+        min_value:int = None,
+        max_value: int = None,
+        error_msg: str = ""
+        ) -> int:
+        """Ask user to type in valid number.
+        Optinally provide validation range with min & max & guiding error msg"""
         while True:
-            try:
-                return try_parse_int(input(msg))
-            except ValueError:
-                self.console.print("[red]Number input is required![/red]")
+            value = IntPrompt.ask(msg)
+            
+            if min_value is None and max_value is None:
+                return value
+            else:
+                if min_value <= value <= max_value:
+                    return value
+                
+            self._print_error(error_msg)
+            
+    def _print_error(self, error_msg: str = "Error"):
+        self.console.print(f"[red]{error_msg}[/red]")
+        
+      
                 
 

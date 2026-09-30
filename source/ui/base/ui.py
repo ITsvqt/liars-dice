@@ -47,7 +47,7 @@ class GameUI(ABC):
         
         
     @abstractmethod
-    def get_set_up_vars(self):
+    def get_set_up_vars(self, min_ai_cnt: int, max_ai_cnt: int, suggested_ai_cnt) -> dict:
         """
         Return:
             cnt_ai: int
