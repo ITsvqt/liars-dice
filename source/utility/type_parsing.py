@@ -17,7 +17,7 @@ _BOOL_LOOKUP = {
     
 def try_parse_bool(bool_string: str) -> bool:
     
-    result = _BOOL_LOOKUP.get(bool_string.strip().lower(), default = None)
+    result = _BOOL_LOOKUP.get(bool_string.strip().lower(), None)
     if result is None:
         raise ValueError(f'Can\'t parse {bool_string} to bool!')
     

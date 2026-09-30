@@ -4,30 +4,12 @@ from abc import ABC, abstractmethod
 from models.dice import Dice
 from utility.constants import CNT_DICE_PER_PLAYER
 
-class _Required:
-    """Just a unique type to check against, nothing more"""
-    pass
-
 class Player(ABC):
     
-    IS_BOT = _Required
-
-    def __init_subclass__(cls, **kwargs):
-        """Defensive check for overwriting required class constants in derived classes."""
-        super().__init_subclass__(**kwargs)
-        
-        required = [
-            name for name, value in vars(Player).items()
-            if value is _Required
-        ]
-        for const in required:
-            if getattr(cls, const) is _Required:
-                raise TypeError(f"'{cls.__name__}' must define {const}")
-
-
     def __init__(self, name: str):
         self.name: str = name
         self.hand: list[Dice] = [Dice() for _ in range(CNT_DICE_PER_PLAYER)]
+        self.is_bot = False
         
         
     @property

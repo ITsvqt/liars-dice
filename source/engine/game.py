@@ -26,21 +26,19 @@ class Game:
         
         self.ui = ui
         
-        self.players:  list[Player] = None
-        self.player_circle: PlayerCircle = None
+        self.players:  list[Player] = None       # all initial player
+        self.player_circle: PlayerCircle = None  # active players
         self.wild_ones = None
         self.human_player: HumanPlayer = None #! the idea was to display the hand of this player, but the refference ended up useless for now ( check the game loop if its not there, its useless)
-        self.turn_cnt: int = 0
+        self.cnt_turn: int = 0
 
         self.ui.initiate()
         self._set_up()
+        self.ui.start_game(self.players, self.wild_ones)
         
     def _set_up(self):
         config = self.ui.get_set_up_vars()
         
-        #todo: refactor this 2 functions
-        #todo: add validation for player name , validation for cnt_players is in circle
-        #todo: keep going with the testing and 
         all_players: list[Player] = self._create_ai_players(config["cnt_ai"])
         human_player: Player = self._create_human_player(config["player_name"])
         all_players.append(human_player)
@@ -54,18 +52,21 @@ class Game:
 
     def game_loop(self):
 
-        
         while not LiarsDiceRules.is_game_over(self.player_circle):
             self._play_round()
 
-        self.ui.show_message(f"And the winned is: {self.player_circle.current_player.name}")
+        winner = self.player_circle.current_player
+        self.ui.show_winner(winner.name, winner.is_bot)
         #todo : what happens after this loop, who is the current player, is he the winner, 
 
     def _play_round(self):
-        
         dice_face_cnt: Counter = self._roll_and_collect_dice()
         dice_cnt = sum(dice_face_cnt.values())
         current_bid = None        
+        
+        #todo: pass active players to ui.show round
+        self.ui.show_round(self.cnt_turn)
+        self.ui.ask_confirmation()
         
         #* Until plays challenge move
         while True:
@@ -95,7 +96,7 @@ class Game:
             self.player_circle.remove_player(res)
             self.ui.show_message(f"Player {loosing_player.name} was elminated")
             
-        self.turn_cnt += 1
+        self.cnt_turn += 1
         
 
         
@@ -105,7 +106,7 @@ class Game:
             while True:
                 
                 #* Determine input source
-                if player.IS_BOT:
+                if player.is_bot:
                     move = player.calc_turn(current_bid, dice_cnt, False)
                 else:
                     move = self.ui.ask_player_move(current_bid, player.values, dice_cnt)
@@ -150,35 +151,35 @@ class Game:
         return result
 
 
-    
-    def _create_ai_players(self, count: int) -> list[Player]:
-        
-        max_ai_cnt = CNT_MAX_PLAYER - 1
-        
-        while True:
-            
-            if 1 <= aip_cnt <= max_ai_cnt:
-                return [
-                    AIPlayer(name, aggression)
-                    for name, aggression
-                    in random.sample(list(AI_PLAYERS.items()), aip_cnt)
-                ] 
-                
-            self.ui.show_message(f"Illegal opponents count[1:{max_ai_cnt}]: {aip_cnt}")
+    def _create_ai_players(self, aip_cnt: int) -> list[Player]:
+        return [
+            AIPlayer(name, aggression)
+            for name, aggression
+            in random.sample(list(AI_PLAYERS.items()), aip_cnt)
+            ]
+                   
+    def _create_human_player(self, human_name: str) -> Player:
+        self._ensure_valid_human_name(human_name)
+        h_p = HumanPlayer(human_name)
+        self.human_player = h_p
+        return h_p
             
             
-    def _create_human_player(self, reserved_names: list[int]) -> Player:
-        
-        while True:
-            human_p_name = self.ui.ask_player_name("Captain")
-            
-            if human_p_name not in reserved_names:
-                h_p = HumanPlayer(human_p_name)
-                self.human_player = h_p
-                return h_p
-                
-            self.ui.show_message(f"'{human_p_name}' is already taken")
-        
+    @staticmethod
+    def _ensure_valid_human_name(name: str):
+        """Not in ai_players_names"""
+        if name in {n for n in AI_PLAYERS.values()}:
+            raise ValueError(f"[Error] Human player name [{name}] overlaping with AI names!")
 
                 
+    def __repr__(self):
+        res = ['---------------------------------']
+        res.append("Game object:")
+        res.append(repr(self.player_circle))
+        res.append("\t Players:")
+        for p in self.players:
+            res.append(f"\t\t{p}")
+        res.append("\t Wild ones:" + str(self.wild_ones))
+        res.append('---------------------------------')
+        return "\n".join(res)
         

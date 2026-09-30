@@ -6,11 +6,11 @@ from models.bid import Bid
 
 class AIPlayer(Player):
     
-    IS_BOT = True
     
     def __init__(self, name: str, aggression: float):
         super().__init__(name)
         # aggression: 0.0 = cautious, 1.0 = reckless bluffer
+        self.is_bot = True
         self.aggression = aggression
         
 

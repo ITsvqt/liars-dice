@@ -21,9 +21,8 @@ class PlayerCircle:
     """Circular doubly linked list of active players representing turn oreder."""
     
     def __init__(self, players: list[Player]):
-       
-        self._ensure_valid_player_count(players)  #! Found that data should be already validated, for what this method does
-
+        self._ensure_valid_player_count(players)
+        
         self._current_player: PlayerNode = None
         self._count = len(players)
         self._build_player_circle(players)
