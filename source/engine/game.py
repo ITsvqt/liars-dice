@@ -161,7 +161,7 @@ class Game:
         return [
             AIPlayer(name, aggression)
             for name, aggression
-            in random.sample(list(AI_PLAYERS.items()), aip_cnt)
+            in random.sample(list(const.AI_PLAYERS.items()), aip_cnt)
             ]
                    
     def _create_human_player(self, human_name: str) -> Player:
@@ -174,7 +174,7 @@ class Game:
     @staticmethod
     def _ensure_valid_human_name(name: str):
         """Not in ai_players_names"""
-        if name in {n for n in AI_PLAYERS.values()}:
+        if name in {n for n in const.AI_PLAYERS.values()}:
             raise ValueError(f"[Error] Human player name [{name}] overlaping with AI names!")
 
                 
