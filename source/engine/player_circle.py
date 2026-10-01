@@ -38,10 +38,11 @@ class PlayerCircle:
     
     @property
     def all_players(self):
+        """Active players in the game"""
         res = []
         for _ in range(self._count):
             res.append(self.current_player)
-            self.advance
+            self.advance()
 
         return res
     

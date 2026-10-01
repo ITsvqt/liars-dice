@@ -16,32 +16,43 @@ class GameUI(ABC):
         ...
         
     @abstractmethod
-    def start_game(self, players: list[Player], wild_ones: bool):
+    def show_prestart(self, players: list[Player], wild_ones: bool):
         """Show initial game state"""
         ...  
     
     @abstractmethod
-    def show_round(self, round_num: int, players: list[Player], wild_ones: bool):
+    def show_round(self, round_num: int, active_players: list[Player], wild_ones: bool):
         """Update UI to round start state"""
         ...
         
     @abstractmethod
-    def show_turn(self, player_name: str, is_bot: bool):
+    def show_turn_header(self, current_player: Player):
+        ... 
+    
+    @abstractmethod
+    def show_turn(self,  player_name: str, bid: Bid | None):
         """Update UI to turn state"""
         ...
         
     @abstractmethod
-    def show_reveal(self, players: list[Player], wild_ones: bool):
+    def show_reveal(self, active_players: list[Player], wild_ones: bool):
         """Update UI to round end state"""
         ...
 
     @abstractmethod
-    def show_round_result(self, loser_name: str, loser_is_bot: bool, eliminated: bool, bid_str: str, challenger_name: str, bid_valid: bool):
+    def show_round_result(
+        self,
+        loser_name: str,
+        loser_is_bot: bool,
+        eliminated: bool,
+        bid: Bid,
+        challenger_name: str,
+        challenge_valid: bool):
         """Update UI to round result state"""
         ...
         
     @abstractmethod
-    def show_winner(self, player_name: str, is_bot: bool):
+    def show_winner(self, player: Player):
         """Update UI to game end state"""
         ...
         
@@ -59,7 +70,7 @@ class GameUI(ABC):
     @abstractmethod
     def ask_player_move(self,
         current_bid: Bid,
-        player_dice: list[int],
+        player: Player,
         dice_cnt: int,
         wild_ones: bool = False
         )-> tuple[str, tuple[int, int] | None]:
@@ -71,7 +82,11 @@ class GameUI(ABC):
     @abstractmethod
     def show_message(self, msg: str):
         ...
-    
+        
+    @abstractmethod
+    def show_error(self, error_msg: str):
+        ...
+        
     @abstractmethod
     def ask_confirmation(self, msg: str):
         ...

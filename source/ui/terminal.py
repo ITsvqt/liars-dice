@@ -79,7 +79,7 @@ class TerminalUI(GameUI):
         return setup
         
         
-    def start_game(self, players: list[Player], wild_ones: bool):
+    def show_prestart(self, players: list[Player], wild_ones: bool):
         self.console.print()
         self.console.print(f"  [dim]Players at the table:[/dim]")
         for p in players:
@@ -95,7 +95,7 @@ class TerminalUI(GameUI):
         
         
         
-    def show_round(self, round_num: int, players: list[Player], wild_ones: bool):
+    def show_round(self, round_num: int, active_players: list[Player], wild_ones: bool):
         self.console.print()
         self.console.rule(f"[bold yellow]⚔  Round {round_num}  ⚔[/bold yellow]", style="yellow")
 
@@ -104,7 +104,7 @@ class TerminalUI(GameUI):
         table.add_column("Dice", justify="center")
         table.add_column("Status", justify="center")
 
-        for p in players:
+        for p in active_players:
             dice_bar = "🎲" * p.cnt_dice
             tag = "[green]Bot[/green]" if p.is_bot else "[yellow]You[/yellow]"
             table.add_row(p.name, dice_bar or "[red]—[/red]", tag)
@@ -114,25 +114,36 @@ class TerminalUI(GameUI):
         if wild_ones:
             self.console.print("  [magenta bold]★ Wild Ones Mode Active ★[/magenta bold]  "
                         "[dim]1s count as any face[/dim]\n")
+            
+        self.ask_confirmation("[dim]Press enter to continue...[/dim]")
         
         
-        
-        
-    def show_turn(self, player_name: str, is_bot: bool):
-        style = "cyan" if is_bot else "yellow"
-        icon = "🤖" if is_bot else "🧑"
+    def show_turn_header(self, current_player: Player):
+        style = "cyan" if current_player.is_bot else "yellow"
+        icon = "🤖" if current_player.is_bot else "🧑"
         self.console.print()
-        self.console.rule(f"[{style}]{icon}  {player_name}'s Turn[/{style}]", style=style)
+        self.console.rule(f"[{style}]{icon}  {current_player.name}'s Turn[/{style}]", style=style)
+    
+        
+    def show_turn(self, player_name: str, bid: Bid | None):
+
+        if bid is None:
+            move_str = f"  [bold red]{player_name}[/bold red] calls [bold]LIAR![/bold]  💀"
+        else:
+            bid = str(bid)
+            move_str = (
+                f"  [bold cyan]{player_name}[/bold cyan] bids "
+                f"[cyan bold]{bid[0]}[/bold cyan]{bid[1:]}"
+            )
+        self.console.print(move_str)
         
         
-        
-        
-    def show_reveal(self, players: list[Player], dice_face_count: Counter, wild_ones: bool):
+    def show_reveal(self, active_players: list[Player], dice_face_count: Counter, wild_ones: bool):
         self.console.print()
         self.console.rule("[bold red]🎲  REVEAL  🎲[/bold red]", style="red")
         self.console.print()
         
-        for p in players:
+        for p in active_players:
             symbols = "  ".join(self.FACE_SYMBOLS[v] for v in sorted(p.values))
             values_str = ", ".join(str(v) for v in sorted(p.values))
             tag = "[cyan]Bot[/cyan]" if p.is_bot else "[yellow]You[/yellow]"
@@ -157,19 +168,19 @@ class TerminalUI(GameUI):
             
             
     
-    def show_round_result(self, loser_name: str, loser_is_bot: bool, eliminated: bool, bid_str: str, challenger_name: str, bid_valid: bool):
+    def show_round_result(self, loser_name: str, loser_is_bot: bool, eliminated: bool, bid: Bid, challenger_name: str, challenge_valid: bool):
         self.console.print()
-        if bid_valid:
+        if challenge_valid is False:
             self.console.print(Panel(
                 f"[green bold]Bid stands![/green bold]\n"
-                f"[dim]{bid_str} — it was real![/dim]\n\n"
+                f"[dim]{bid} — it was real![/dim]\n\n"
                 f"[red]{'🤖' if loser_is_bot else '🧑'} {challenger_name} challenged too soon — loses a die.[/red]",
                 border_style="green", padding=(0, 2)
             ))
-        else:
+        else: # is True
             self.console.print(Panel(
                 f"[red bold]Bluff called![/red bold]\n"
-                f"[dim]{bid_str} — wasn't there![/dim]\n\n"
+                f"[dim]{bid} — wasn't there![/dim]\n\n"
                 f"[red]{'🤖' if loser_is_bot else '🧑'} {loser_name} was bluffing — loses a die.[/red]",
                 border_style="red", padding=(0, 2)
             ))
@@ -180,34 +191,29 @@ class TerminalUI(GameUI):
         
         
         
-    def show_winner(self, player_name: str, is_bot: bool):
+    def show_winner(self, player: Player):
         self.console.print()
         self.console.rule("[bold yellow]🏆  GAME OVER  🏆[/bold yellow]", style="yellow")
-        icon = "🤖" if is_bot else "🎉"
+        icon = "🤖" if player.is_bot else "🎉"
         self.console.print()
         self.console.print(
             Panel.fit(
-                f"{icon}  [bold yellow]{player_name} wins![/bold yellow]  {icon}\n"
+                f"{icon}  [bold yellow]{player.name} wins![/bold yellow]  {icon}\n"
                 f"[dim]Last die standing.[/dim]",
                 border_style="yellow",
                 padding=(1, 6),
             )
         )
         self.console.print()
-        
-        
-        
-        
 
-        
-        
         
     def ask_player_move(self,
         current_bid: Bid,
-        player_dice: list[int],
+        player: Player,
         dice_cnt: int,
         wild_ones: bool = False):
         
+        player_dice = player.values
         #* Show human_player hand,
         symbols = " ".join(self.FACE_SYMBOLS[v] for v in sorted(player_dice))
         self.console.print(f"\n  [bold yellow]Your dice:[/bold yellow] {symbols}  "
@@ -216,7 +222,6 @@ class TerminalUI(GameUI):
         #* Show current_bid
         if current_bid is not None:
             self.console.print(f"\n  [bold]Current bid:[/bold] [cyan]{current_bid}[/cyan]")
-            self.console.print(f"  [dim]Total dice on table: {dice_cnt}[/dim]")
             
         #* Show dice_count
         self.console.print(f"  [dim]Total dice on table: {dice_cnt}[/dim]")
@@ -225,6 +230,7 @@ class TerminalUI(GameUI):
         if wild_ones:
             self.console.print(f"  [dim magenta]Wild Ones active — 1s count as any face[/dim magenta]")
         
+        self.console.print()
         #* Ask for move
         if current_bid is not None:
             self.console.print("\n  [bold]Your move:[/bold]")
@@ -251,8 +257,12 @@ class TerminalUI(GameUI):
         print(msg) 
         
         
-    def ask_confirmation(self, msg: str = "Press Enter to continue..."):
-        self.console.print(msg)
+    def show_error(self, error_msg: str = "Error"):
+        self.console.print(f"[red]{error_msg}[/red]")
+      
+      
+    def ask_confirmation(self, msg: str = "Press Enter to continue..."):        
+        self.console.print(msg, end='')
         input()
         
 
@@ -262,10 +272,10 @@ class TerminalUI(GameUI):
             p_name = Prompt.ask("[bold yellow]Your name, challenger[/bold yellow]", default="Captain")
             
             if len(p_name) > 15:
-                self._print_error("Name too long, max - 15")
+                self.show_error("Name too long, max - 15")
                 continue
             if p_name in reserved_names:
-                self._print_error("Name is reserved by AI player")
+                self.show_error("Name is reserved by AI player")
                 continue
             
             return p_name
@@ -293,10 +303,9 @@ class TerminalUI(GameUI):
                 if min_value <= value <= max_value:
                     return value
                 
-            self._print_error(error_msg)
+            self.show_error(error_msg)
             
-    def _print_error(self, error_msg: str = "Error"):
-        self.console.print(f"[red]{error_msg}[/red]")
+
         
       
                 

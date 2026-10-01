@@ -20,16 +20,15 @@ class LiarsDiceRules:
     
     @staticmethod
     def is_challenge_correct(bid: Bid, face_count: Counter[int,int], wild_ones: bool = False) -> bool:
-        """If Bid's dice quantity for die face - is not greater than the actual\n
-        Returns: False: current player looses\n
-        True: previous player looses
+        """If Bid is higher than the actual\n
+        Returns: If the challenging players wins
         """
         dice_cnt_for_bid_face = face_count[bid.face_value]
         
         if wild_ones is True and bid.face_value != 1:
             dice_cnt_for_bid_face += face_count[1]
         
-        return dice_cnt_for_bid_face >= bid.quantity
+        return bid.quantity > dice_cnt_for_bid_face
     
     @staticmethod
     def is_game_over(players: PlayerCircle):

@@ -30,20 +30,17 @@ class Game:
         self.player_circle: PlayerCircle = None  # active players
         self.wild_ones = None
         self.human_player: HumanPlayer = None #! the idea was to display the hand of this player, but the refference ended up useless for now ( check the game loop if its not there, its useless)
-        self.cnt_turn: int = 0
+        self.cnt_round: int = 0
 
-        self.ui.initiate()
-        self._set_up()
-        self.ui.start_game(self.players, self.wild_ones)
+        
         
     def _set_up(self):
         config = self.ui.get_set_up_vars(
             const.CNT_MIN_PLAYERS - 1, # -1 for the human player
-            const.CNT_MAX_PLAYER - 1,      # -1 for the human player
+            const.CNT_MAX_PLAYER - 1,  # -1 for the human player
             const.SUGGESTION_AI_PLAYER_CNT,
             {name for name in const.AI_PLAYERS.keys()}
         )
-        print(repr(self))
         
         all_players: list[Player] = self._create_ai_players(config["cnt_ai"])
         human_player: Player = self._create_human_player(config["player_name"])
@@ -54,33 +51,38 @@ class Game:
         self.players = all_players
         self.player_circle = PlayerCircle(all_players)
         self.wild_ones = config["wild_ones"]
-    
+        
 
-    def game_loop(self):
+    def start(self):
 
+        self.ui.initiate()
+        self._set_up()
+        self.ui.show_prestart(self.players, self.wild_ones)
+        
         while not LiarsDiceRules.is_game_over(self.player_circle):
             self._play_round()
 
         winner = self.player_circle.current_player
-        self.ui.show_winner(winner.name, winner.is_bot)
+        self.ui.show_winner(winner)
         #todo : what happens after this loop, who is the current player, is he the winner, 
 
     def _play_round(self):
+        #* Round setup
+        self.cnt_round += 1
+        active_players = self.player_circle.all_players
         dice_face_cnt: Counter = self._roll_and_collect_dice()
         dice_cnt = sum(dice_face_cnt.values())
         current_bid = None        
         
-        #todo: pass active players to ui.show round
-        self.ui.show_round(self.cnt_turn)
-        self.ui.ask_confirmation()
+        self.ui.show_round(self.cnt_round, active_players, self.wild_ones)
         
-        #* Until plays challenge move
+        #* Go around the circle, until someone Challenge
         while True:
             player: Player = self.player_circle.current_player
+            self.ui.show_turn_header(player)
+            move: tuple = self._get_valid_player_move(player, current_bid, dice_cnt)
+            self.ui.show_turn(player.name, move[1])
             
-            move = self._get_valid_player_move(player, current_bid, dice_cnt)
-            
-            #todo: show messages for move
             if move[0] == "Challenge":
                 break
             else: #move[0] == 'Bid'
@@ -88,38 +90,48 @@ class Game:
                 
             self.player_circle.advance()
             
+        self.ui.show_reveal(active_players, dice_face_cnt, self.wild_ones)
+        
         #* Determine the looser
         res = LiarsDiceRules.is_challenge_correct(current_bid, dice_face_cnt, self.wild_ones)
         loosing_player = player if res is False else self.player_circle.previous_player
         loosing_player.remove_die()
-        self.ui.show_message(
-            f"Player {loosing_player.name} list the round"
-            f"Dice remaining {loosing_player.cnt_dice}"
-            )
+        
+        # self.ui.show_message(
+        #     f"Player {loosing_player.name} lost the round"
+        #     f"Dice remaining {loosing_player.cnt_dice}"
+        #     )
         
         #* Check for elmination
-        if loosing_player.is_hand_empty is True:
-            self.player_circle.remove_player(res)
-            self.ui.show_message(f"Player {loosing_player.name} was elminated")
-            
-        self.cnt_turn += 1
+        is_eliminated = loosing_player.is_hand_empty()
         
+        if is_eliminated is True:
+            self.player_circle.remove_player(res)
+            # self.ui.show_message(f"Player {loosing_player.name} was elminated")
+            
+        self.ui.show_round_result(
+            loosing_player.name,
+            loosing_player.is_bot,
+            is_eliminated,
+            str(current_bid),
+            player.name,
+            res
+            )        
 
         
     def _get_valid_player_move(self, player: Player, current_bid: Bid, dice_cnt: int) -> tuple[str, Bid | None]:
         
             #* Until function exit with return
             while True:
-                
                 #* Determine input source
                 if player.is_bot:
-                    move = player.calc_turn(current_bid, dice_cnt, False)
+                    move = player.calc_turn(current_bid, dice_cnt, self.wild_ones)
                 else:
-                    move = self.ui.ask_player_move(current_bid, player.values, dice_cnt)
+                    move = self.ui.ask_player_move(current_bid, player, dice_cnt)
 
                 #* Early exit when move is "Challenge"        
                 if move[0] == "Challenge":
-                    if current_bid is None: # No bid, Challenge situation
+                    if current_bid is None: #! this is pre-arranged and passing through crashes the program
                         raise ValueError("Program error: Trying to challenge last bid , when there is no initial bid.")
                     
                     return move 
@@ -133,9 +145,9 @@ class Game:
                             return (move[0], new_bid)
                         
                     except ValueError as e:
-                        self.ui.show_message(e)
+                        self.ui.show_error(e)
                         
-                else:
+                else: #! this is pre-arranged and passing through crashes the program
                     raise ValueError(f"Program error: Invalid move - action:[{move[0]}] bid [{move[1]}]")
         
         
@@ -151,7 +163,6 @@ class Game:
             p = self.player_circle.current_player
             p.roll()
             result.update(p.values)
-            print(p.name)
             self.player_circle.advance()
 
         return result

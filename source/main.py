@@ -6,7 +6,7 @@ from ui.terminal import TerminalUI
 
 t_ui = TerminalUI()
 g = Game(t_ui)
-g.game_loop()
+g.start()
 
 # p1 = _Required
 # print(p1)
