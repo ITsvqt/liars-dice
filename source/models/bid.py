@@ -2,7 +2,7 @@
 
 class Bid:
     
-    def __init__(self, face: int, quantity: int):
+    def __init__(self, quantity: int, face: int):
         self._ensure_valid_bid(face, quantity)
     
         self.face_value: int = face

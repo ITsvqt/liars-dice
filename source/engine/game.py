@@ -185,7 +185,7 @@ class Game:
     @staticmethod
     def _ensure_valid_human_name(name: str):
         """Not in ai_players_names"""
-        if name in {n for n in const.AI_PLAYERS.values()}:
+        if name in {n for n in const.AI_PLAYERS.keys()}:
             raise ValueError(f"[Error] Human player name [{name}] overlaping with AI names!")
 
                 
