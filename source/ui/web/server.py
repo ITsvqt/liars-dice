@@ -28,7 +28,10 @@ app.mount("/static", StaticFiles(directory="ui/web/static"), name = "static")
 @app.get("/")
 def home():
     return FileResponse("ui/web/static/index.html")
-    
+
+@app.get("/game")
+def game():
+    return FileResponse("ui/web/static/game.html")
 #* ENDPOINTS: 
 #!
 #TODO

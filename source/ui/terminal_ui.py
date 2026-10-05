@@ -15,6 +15,7 @@ from rich import box
 
 from ui.base.ui import GameUI
 from models.bid import Bid
+import utility.constants as c
 
 class TerminalUI(GameUI):
     
@@ -51,25 +52,21 @@ class TerminalUI(GameUI):
         )
         self.console.print()
         
-    def get_setup_vars(
-        self,
-        min_ai_cnt: int,
-        max_ai_cnt: int,
-        suggested_ai_cnt,
-        reserved_names: set[str]
-        ) -> dict:
+    def get_setup_vars(self) -> dict:
 
         setup = {}
+        min_ai_cnt = c.CNT_MIN_PLAYERS - 1 # -1 because of the human player
+        max_ai_cnt = c.CNT_MAX_PLAYERS - 1 # -1 because of the human player
         
         setup["cnt_ai"] = self._ask_number(
             "[bold]How many AI opponents?[/bold] "
             + f"[dim][{min_ai_cnt}:{max_ai_cnt}][/dim]"
-            + f"[cyan bold]({suggested_ai_cnt})[/cyan bold]",
+            + f"[cyan bold]({c.SUGGESTED_AI_PLAYER_CNT})[/cyan bold]",
             min_ai_cnt,
             max_ai_cnt,
             "Please enter valid number of enemies"
         )
-        setup["player_name"] = self._ask_player_name(reserved_names)
+        setup["player_name"] = self._ask_player_name(c.RESERVED_NAMES)
         setup["wild_ones"] = self._ask_bool(
             "[bold]Enable Wild Ones mode?[/bold] "
             "[dim](1s count as any face)[/dim]",
@@ -126,14 +123,14 @@ class TerminalUI(GameUI):
         self.console.rule(f"[{style}]{icon}  {current_player.name}'s Turn[/{style}]", style=style)
     
         
-    def show_turn(self, player_name: str, bid: Bid | None):
+    def show_turn(self, player: Player, bid: Bid | None):
 
         if bid is None:
-            move_str = f"  [bold red]{player_name}[/bold red] calls [bold]LIAR![/bold]  💀"
+            move_str = f"  [bold red]{player.name}[/bold red] calls [bold]LIAR![/bold]  💀"
         else:
             bid = str(bid)
             move_str = (
-                f"  [bold cyan]{player_name}[/bold cyan] bids "
+                f"  [bold cyan]{player.name}[/bold cyan] bids "
                 f"[cyan bold]{bid[0]}[/bold cyan]{bid[1:]}"
             )
         self.console.print(move_str)
@@ -169,24 +166,31 @@ class TerminalUI(GameUI):
             
             
     
-    def show_round_result(self, loser_name: str, loser_is_bot: bool, eliminated: bool, bid: Bid, challenger_name: str, challenge_valid: bool):
+    def show_round_result(
+        self,
+        loosing_player: Player,
+        is_eliminated: bool,
+        bid: Bid,
+        challenger_player: Player,
+        is_challenge_valid: bool
+        ):
         self.console.print()
-        if challenge_valid is False:
+        if is_challenge_valid is False:
             self.console.print(Panel(
                 f"[green bold]Bid stands![/green bold]\n"
                 f"[dim]{bid} — it was real![/dim]\n\n"
-                f"[red]{'🤖' if loser_is_bot else '🧑'} {challenger_name} challenged too soon — loses a die.[/red]",
+                f"[red]{'🤖' if loosing_player.is_bot else '🧑'} {challenger_player.name} challenged too soon — loses a die.[/red]",
                 border_style="green", padding=(0, 2)
             ))
         else: # is True
             self.console.print(Panel(
                 f"[red bold]Bluff called![/red bold]\n"
                 f"[dim]{bid} — wasn't there![/dim]\n\n"
-                f"[red]{'🤖' if loser_is_bot else '🧑'} {loser_name} was bluffing — loses a die.[/red]",
+                f"[red]{'🤖' if loosing_player.is_bot else '🧑'} {loosing_player.name} was bluffing — loses a die.[/red]",
                 border_style="red", padding=(0, 2)
             ))
-        if eliminated:
-            self.console.print(f"\n  [bold red]💀 {loser_name} is eliminated![/bold red]")
+        if is_eliminated:
+            self.console.print(f"\n  [bold red]💀 {loosing_player.name} is eliminated![/bold red]")
         time.sleep(1.5)
         
         
@@ -298,13 +302,14 @@ class TerminalUI(GameUI):
         while True:
             value = IntPrompt.ask(msg)
             
-            if min_value is None and max_value is None:
-                return value
-            else:
-                if min_value <= value <= max_value:
-                    return value
+            if (
+                (min_value is not None and value < min_value) or 
+                (max_value is not None and value > max_value)
+            ):
+                self.show_error(error_msg)
+                continue
                 
-            self.show_error(error_msg)
+            return value
             
 
         

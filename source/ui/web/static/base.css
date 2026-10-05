@@ -1,0 +1,76 @@
+/* ── Variables ──────────────────────────────────────── */
+ 
+:root {
+    --bg:        #0e0c0a;
+    --surface:   #1a1612;
+    --gold:      #c9a84c;
+    --gold-dim:  #7a6530;
+    --text:      #e8dcc8;
+    --text-dim:  #6b5f4e;
+    --red:       #8b2020;
+    --radius:    6px;
+}
+ 
+/* ── Reset ──────────────────────────────────────────── */
+ 
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+ 
+/* ── Base ───────────────────────────────────────────── */
+ 
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: Georgia, 'Times New Roman', serif;
+    min-height: 100vh;
+    min-height: 100vh;
+    margin: 0;
+}
+ 
+h1, h2, h3 {
+    font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', serif;
+    color: var(--gold);
+}
+ 
+/* ── Shared components ──────────────────────────────── */
+ 
+.btn {
+    font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--bg);
+    background: var(--gold);
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.9rem 3rem;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+}
+ 
+.btn:hover {
+    background: #dbb95a;
+}
+ 
+.btn:active {
+    transform: scale(0.97);
+}
+ 
+.btn:disabled {
+    background: var(--gold-dim);
+    cursor: not-allowed;
+    transform: none;
+}
+ 
+.hint {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    min-height: 1.2em;
+}
+ 
+.hint.error {
+    color: var(--red);
+}

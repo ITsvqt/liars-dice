@@ -1,12 +1,13 @@
 
 
 CNT_MIN_PLAYERS = 2
-CNT_MAX_PLAYER = 5
+CNT_MAX_PLAYERS = 5
 
 CNT_DICE_PER_PLAYER = 5
 
-SUGGESTION_AI_PLAYER_CNT = 2
-SUGGESTION_PLAYER_NAME = "Captain"
+SUGGESTED_AI_PLAYER_CNT = 2
+SUGGESTED_PLAYER_NAME = "Captain"
+SUGGESTED_WILD_ONES = False
 
 AI_PLAYERS = {
     "Captain Blackbeard"     : 0.75, # big bluffer
@@ -16,4 +17,5 @@ AI_PLAYERS = {
     "Little Red Riding Hood" : 0.50  # dzen
 }
 
+RESERVED_NAMES = set(AI_PLAYERS.keys())
 #todo: add enum types for: move_type, 

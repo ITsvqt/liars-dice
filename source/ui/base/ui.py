@@ -30,7 +30,7 @@ class GameUI(ABC):
         ... 
     
     @abstractmethod
-    def show_turn(self,  player_name: str, bid: Bid | None):
+    def show_turn(self,  palyer: Player, bid: Bid | None):
         """Update UI to turn state"""
         ...
         
@@ -42,12 +42,11 @@ class GameUI(ABC):
     @abstractmethod
     def show_round_result(
         self,
-        loser_name: str,
-        loser_is_bot: bool,
-        eliminated: bool,
+        loosing_player: Player,
+        is_eliminated: bool,
         bid: Bid,
-        challenger_name: str,
-        challenge_valid: bool):
+        challenger_player: Player,
+        is_challenge_valid: bool):
         """Update UI to round result state"""
         ...
         
@@ -58,13 +57,7 @@ class GameUI(ABC):
         
         
     @abstractmethod
-    def get_setup_vars(
-        self,
-        min_ai_cnt: int,
-        max_ai_cnt: int,
-        suggested_ai_cnt: int,
-        reserved_names: set[str]
-        ) -> dict:
+    def get_setup_vars(self) -> dict:
         """
         Return:
             cnt_ai: int

@@ -35,12 +35,7 @@ class Game:
         
         
     def _set_up(self):
-        config = self.ui.get_setup_vars(
-            const.CNT_MIN_PLAYERS - 1, # -1 for the human player
-            const.CNT_MAX_PLAYER - 1,  # -1 for the human player
-            const.SUGGESTION_AI_PLAYER_CNT,
-            {name for name in const.AI_PLAYERS.keys()}
-        )
+        config = self.ui.get_setup_vars()
         
         all_players: list[Player] = self._create_ai_players(config["cnt_ai"])
         human_player: Player = self._create_human_player(config["player_name"])
@@ -81,7 +76,7 @@ class Game:
             player: Player = self.player_circle.current_player
             self.ui.show_turn_header(player)
             move: tuple = self._get_valid_player_move(player, current_bid, dice_cnt)
-            self.ui.show_turn(player.name, move[1])
+            self.ui.show_turn(player, move[1])
             
             if move[0] == "Challenge":
                 break
@@ -110,11 +105,10 @@ class Game:
             # self.ui.show_message(f"Player {loosing_player.name} was elminated")
             
         self.ui.show_round_result(
-            loosing_player.name,
-            loosing_player.is_bot,
+            loosing_player,
             is_eliminated,
-            str(current_bid),
-            player.name,
+            current_bid,
+            player,
             res
             )        
 
@@ -131,7 +125,7 @@ class Game:
 
                 #* Early exit when move is "Challenge"        
                 if move[0] == "Challenge":
-                    if current_bid is None: #! this is pre-arranged and passing through crashes the program
+                    if current_bid is None: #! this is pre-validated and passing through should crash the program
                         raise ValueError("Program error: Trying to challenge last bid , when there is no initial bid.")
                     
                     return move 
