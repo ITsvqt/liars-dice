@@ -1,45 +1,52 @@
+
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from models.bid import Bid
     from models.player.base.player import Player
+    from models.bid import Bid
 
-from abc import ABC, abstractmethod
+from ui.base.ui import GameUI
 
 
-class GameUI(ABC):
+
+class WebUI(GameUI):
     
-    @abstractmethod
+    def __init__(self):
+        self.state = {
+            "players": [],
+            "current_player": None,
+            "current_bid": None,
+            "phase": None
+        }
+    ...
+
+    #TODO: show methods change the state 
+    #TODO: get methods awaits for response, use events to effectively not waste while True CPU time
+
     def initiate(self):
         """Start UI"""
         ...
         
-    @abstractmethod
     def show_prestart(self, players: list[Player], wild_ones: bool):
         """Show initial game state"""
         ...  
     
-    @abstractmethod
     def show_round(self, round_num: int, active_players: list[Player], wild_ones: bool):
         """Update UI to round start state"""
         ...
         
-    @abstractmethod
     def show_turn_header(self, current_player: Player):
         ... 
     
-    @abstractmethod
     def show_turn(self,  player_name: str, bid: Bid | None):
         """Update UI to turn state"""
         ...
         
-    @abstractmethod
     def show_reveal(self, active_players: list[Player], wild_ones: bool):
         """Update UI to round end state"""
         ...
 
-    @abstractmethod
     def show_round_result(
         self,
         loser_name: str,
@@ -51,13 +58,11 @@ class GameUI(ABC):
         """Update UI to round result state"""
         ...
         
-    @abstractmethod
     def show_winner(self, player: Player):
         """Update UI to game end state"""
         ...
         
         
-    @abstractmethod
     def get_setup_vars(
         self,
         min_ai_cnt: int,
@@ -71,9 +76,8 @@ class GameUI(ABC):
             player_name: str
             wild_ones: True | False
         """
-        ...
+        return 0
     
-    @abstractmethod
     def ask_player_move(self,
         current_bid: Bid,
         player: Player,
@@ -85,21 +89,11 @@ class GameUI(ABC):
         Returns ("Challenge", None) | ("Bid", (face, quantity))"""
         ...
     
-    @abstractmethod
     def show_message(self, msg: str):
         ...
         
-    @abstractmethod
     def show_error(self, error_msg: str):
         ...
         
-    @abstractmethod
     def ask_confirmation(self, msg: str):
         ...
-        
-
-
-    
-    
-        
-        

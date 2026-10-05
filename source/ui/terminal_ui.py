@@ -51,12 +51,13 @@ class TerminalUI(GameUI):
         )
         self.console.print()
         
-    def get_set_up_vars(
+    def get_setup_vars(
         self,
         min_ai_cnt: int,
         max_ai_cnt: int,
         suggested_ai_cnt,
-        reserved_names: set[str]) -> dict:
+        reserved_names: set[str]
+        ) -> dict:
 
         setup = {}
         

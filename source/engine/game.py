@@ -35,7 +35,7 @@ class Game:
         
         
     def _set_up(self):
-        config = self.ui.get_set_up_vars(
+        config = self.ui.get_setup_vars(
             const.CNT_MIN_PLAYERS - 1, # -1 for the human player
             const.CNT_MAX_PLAYER - 1,  # -1 for the human player
             const.SUGGESTION_AI_PLAYER_CNT,
@@ -139,7 +139,7 @@ class Game:
                 #* Validate Bid, and retry if invalid
                 elif move[0] == 'Bid':
                     try:
-                        new_bid = Bid(move[1][0], move[1][1])
+                        new_bid = Bid(move[1][1], move[1][0])
                         if LiarsDiceRules.is_new_bid_valid(current_bid, new_bid):
                             
                             return (move[0], new_bid)
