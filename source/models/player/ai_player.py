@@ -64,12 +64,6 @@ class AIPlayer(Player):
         if not candidate > current_bid and current_bid is not None:
             candidate = Bid(current_bid.quantity + 1, current_bid.face_value)
 
-
-        print(
-            f"{self.name}: current={current_bid}, "
-            f"candidate={candidate}, "
-            f"valid={current_bid is None or candidate > current_bid}"
-        )
         return candidate
 
     def _probability_of_bid(self, bid: Bid, unknown_dice: int, wild_ones: bool) -> float:

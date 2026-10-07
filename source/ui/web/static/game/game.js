@@ -22,7 +22,7 @@ const startBtn      = document.getElementById('start-btn');
 
 // ── Load setup data ───────────────────────────────────
 async function loadSetupData() {
-    const response = await fetch('/setup') //todo implement the endpoint
+    const response = await fetch('/setup')
     setupData = await response.json()
 
     playerNameEl.placeholder = setupData.suggested_name
@@ -70,9 +70,17 @@ playerNameEl.addEventListener('input', () => {
 // ── Submit setup ──────────────────────────────────────
 startBtn.addEventListener('click', async () => {
 
+    const name = playerNameEl.value.trim() || setupData.suggested_name;
+    const error = validateName(name);
+    
+    if (error){
+        setupError.textContent = error;
+        return;
+    }
+
      const data = {
-        player_name: playerNameEl.value.trim(),
-        ai_count: Number(aiCountEl.textContent),
+        player_name: name,
+        cnt_ai: aiCount,
         wild_ones: wildOnes.checked
     };
 
@@ -85,7 +93,11 @@ startBtn.addEventListener('click', async () => {
             body: JSON.stringify(data)
         });
 
+        console.log('setup response:', response.status);
+
         if (!response.ok) {
+            const error = await response.text();  //! REMOVE THIS
+            console.error('Server response:', error); //! REMOVE THIS
             throw new Error(`Server error: ${response.status}`);
         }
 
@@ -98,13 +110,19 @@ startBtn.addEventListener('click', async () => {
         gameScreen.style.display = 'block';
 
     } catch (error) {
-        console.error('Setup failed:', error);
-        setupError.textContent = 'Could not start the game. Please try again.';
+        console.error('Setup failed:', error); //! REMOVE THIS
+        setupError.textContent = error.message
+        //setupError.textContent = 'Could not start the game. Please try again.'; // ! UNCOMMENT THIS
     }
 });
 // ── Polling ───────────────────────────────────────────
 async function poll() {
-    // TODO: GET /state, call render(state), schedule next poll
+    const response = await fetch('/state')
+    const state = await response.json()
+
+    render(state)
+
+    setTimeout(poll, 100)
 }
 
 // ── Render ────────────────────────────────────────────
@@ -113,4 +131,23 @@ function render(state) {
 }
 
 // ── Init ──────────────────────────────────────────────
-loadSetupData();
+async function init() {
+
+    const response = await fetch('/state');
+    const state = await response.json();
+    console.log('STATE:', state); // ! rEMOVE  THIS
+    
+    if (state.is_running) {
+        // skip setup, go straight to game screen
+        gameScreen.style.display = 'flex';
+        
+        render(state)
+        poll()
+        // start polling
+    } else {
+        setupScreen.style.display = 'flex';
+        loadSetupData();
+    }
+}
+
+init();

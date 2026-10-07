@@ -22,8 +22,7 @@ if __name__ ==  '__main__':
         thread = Thread(target = game.start)
         thread.start()
         
-        uvicorn.run("ui.web.server:app", reload = True)
-
+        uvicorn.run("ui.web.server:app") #* , reload = True
     else: # TERMINAl
         terminal_ui = TerminalUI()
         game = Game(terminal_ui)

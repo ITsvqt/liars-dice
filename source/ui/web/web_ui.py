@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 from typing import TYPE_CHECKING
 import threading
@@ -17,6 +16,7 @@ class WebUI(GameUI):
         
         #* Browser info
         self.state = {
+            "is_running": False,
             "round": None,
             "players": [],
             "current_player": None,
@@ -29,11 +29,12 @@ class WebUI(GameUI):
         
         #* Setup
         self.setup_event = threading.Event()
-        self.setup_data: dict | None = None
+        self.setup_data: dict | None = None 
 
         #* Player move
         self.move_event = threading.Event()
         self.move_data = None
+        
 
 
     def get_setup_vars(self) -> dict:
@@ -45,16 +46,16 @@ class WebUI(GameUI):
         """
         
         self.setup_event.wait()
+        self.state["is_running"] = True
         return self.setup_data
-    
-    #TODO: show methods change the state 
-    #TODO: get methods awaits for response, use events to effectively not waste while True CPU time
+
 
 
     def show_prestart(self, players: list[Player], wild_ones: bool):
         """Show initial game state"""
         self.state["players"] = players
         self.state["wild_ones"] = wild_ones
+    
     
     def show_round(self, round_num: int, active_players: list[Player], wild_ones: bool):
         """Update UI to round start state"""

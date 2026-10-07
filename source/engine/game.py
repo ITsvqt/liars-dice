@@ -37,6 +37,8 @@ class Game:
     def _set_up(self):
         config = self.ui.get_setup_vars()
         
+        print(config) #! Remove this
+        
         all_players: list[Player] = self._create_ai_players(config["cnt_ai"])
         human_player: Player = self._create_human_player(config["player_name"])
         all_players.append(human_player)

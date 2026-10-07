@@ -50,3 +50,11 @@ class Player(ABC):
                 f"[{type(self).__name__}."
                 f"{call_func.__name__}] Error: Player\'s hand is empty !"
                 )
+            
+    def to_dict(self, reveal: bool = False):
+        return {
+            "name": self.name,
+            "dice_count": self.cnt_dice,
+            "hand": self.values if reveal else [],
+            "is_bot": self.is_bot
+        }
