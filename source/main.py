@@ -6,9 +6,10 @@ from ui.terminal_ui import TerminalUI
 from ui.web.web_ui import WebUI
 from ui.web import server
 
+
 if __name__ ==  '__main__':
     
-    IS_UI_WEB = False
+    IS_UI_WEB = True
 
     if IS_UI_WEB:
         

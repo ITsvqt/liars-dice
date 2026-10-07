@@ -59,7 +59,7 @@ class Game:
 
         winner = self.player_circle.current_player
         self.ui.show_winner(winner)
-        #todo : what happens after this loop, who is the current player, is he the winner, 
+
 
     def _play_round(self):
         #* Round setup
@@ -126,7 +126,7 @@ class Game:
                 #* Early exit when move is "Challenge"        
                 if move[0] == "Challenge":
                     if current_bid is None: #! this is pre-validated and passing through should crash the program
-                        raise ValueError("Program error: Trying to challenge last bid , when there is no initial bid.")
+                        raise ValueError(f"[Error] Game received invalid move: ({move[0]}, {move[1]}. CurrBid: {current_bid}")
                     
                     return move 
                     
@@ -142,7 +142,7 @@ class Game:
                         self.ui.show_error(e)
                         
                 else: #! this is pre-arranged and passing through crashes the program
-                    raise ValueError(f"Program error: Invalid move - action:[{move[0]}] bid [{move[1]}]")
+                    raise ValueError(f"[Error] Game received invalid move: ({move[0]}, {move[1]})")
         
         
     def _roll_and_collect_dice(self) -> Counter[int, int]:
@@ -180,7 +180,7 @@ class Game:
     def _ensure_valid_human_name(name: str):
         """Not in ai_players_names"""
         if name in {n for n in const.AI_PLAYERS.keys()}:
-            raise ValueError(f"[Error] Human player name [{name}] overlaping with AI names!")
+            raise ValueError(f"[Error] Game received invalid data : [{name}] overlaping with AI names!")
 
                 
     def __repr__(self):

@@ -3,24 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liar's Dice</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>Liar's Dice — Game</title>
+    <link rel="stylesheet" href="/static/base.css">
+    <link rel="stylesheet" href="/static/game/game.css">
 </head>
 <body>
-    <main class="home">
-        <div class="brand">
-            <div class="dice-row">
-                <span class="die">⚄</span>
-                <span class="die">⚂</span>
-                <span class="die">⚅</span>
+
+    <!-- ── Setup screen ─────────────────────────────── -->
+    <section id="setup-screen">
+        <div class="setup-card">
+            <h1>Game Setup</h1>
+
+            <div class="field">
+                <label for="player-name">Your Name</label>
+                <input
+                    type="text"
+                    id="player-name"
+                    placeholder="Enter your name"
+                    maxlength="20"
+                    autocomplete="off"
+                />
+                <p class="hint" id="name-hint"></p>
+                <p class="taken-names" id="taken-names"></p>
             </div>
-            <h1>Liar's Dice</h1>
-            <p class="tagline">Choose settings</p>
+
+            <div class="field">
+                <label>Number of AI Players</label>
+                <div class="stepper">
+                    <button class="stepper-btn" id="ai-dec">−</button>
+                    <span id="ai-count">2</span>
+                    <button class="stepper-btn" id="ai-inc">+</button>
+                </div>
+            </div>
+
+            <div class="field field--row">
+                <label for="wild-ones">Wild Ones Mode</label>
+                <input type="checkbox" id="wild-ones" />
+            </div>
+
+            <p class="hint error" id="setup-error"></p>
+
+            <button class="btn" id="start-btn">Confirm</button>
+        </div>
+    </section>
+
+    <!-- ── Game screen ──────────────────────────────── -->
+    <section id="game-screen" hidden>
+
+        <header class="game-header">
+            <h2 id="round-label">Round 1</h2>
+            <p id="turn-label" class="turn-label"></p>
+        </header>
+
+        <div class="game-body">
+
+            <!-- Players sidebar -->
+            <aside class="players-panel">
+                <h3>Players</h3>
+                <ul id="players-list"></ul>
+                <p class="total-dice">Total dice: <span id="total-dice">—</span></p>
+            </aside>
+
+            <!-- Main area -->
+            <main class="game-main">
+
+                <!-- Current bid -->
+                <div class="bid-display">
+                    <p class="bid-label">Current Bid</p>
+                    <p id="current-bid" class="bid-value">—</p>
+                </div>
+
+                <!-- Human dice -->
+                <div class="your-dice">
+                    <p class="dice-label">Your Dice</p>
+                    <div id="dice-row"></div>
+                </div>
+
+                <!-- Action log -->
+                <div class="log-box">
+                    <ul id="action-log"></ul>
+                </div>
+
+                <!-- Human controls -->
+                <div id="controls" class="controls" hidden>
+                    <div class="bid-inputs">
+                        <div class="input-group">
+                            <label for="bid-face">Face</label>
+                            <input type="number" id="bid-face" min="1" max="6" value="1" />
+                        </div>
+                        <div class="input-group">
+                            <label for="bid-qty">Quantity</label>
+                            <input type="number" id="bid-qty" min="1" value="1" />
+                        </div>
+                        <button class="btn btn--small" id="bid-btn">Bid</button>
+                    </div>
+                    <button class="btn btn--ghost" id="challenge-btn">Challenge</button>
+                    <p class="hint error" id="move-error"></p>
+                </div>
+
+            </main>
         </div>
 
-        <p class="hint" id="hint"></p>
-    </main>
+        <!-- Game over overlay -->
+        <div id="game-over" class="game-over-overlay" hidden>
+            <div class="game-over-card">
+                <h2 id="game-over-title">Game Over</h2>
+                <p id="game-over-msg"></p>
+                <a href="/static/game/game.html" class="btn">Play Again</a>
+            </div>
+        </div>
 
-    <script src="/static/game.js"></script>
+    </section>
+
+    <script src="/static/game/game.js"></script>
 </body>
 </html>
