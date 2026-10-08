@@ -96,8 +96,6 @@ startBtn.addEventListener('click', async () => {
         console.log('setup response:', response.status);
 
         if (!response.ok) {
-            const error = await response.text();  //! REMOVE THIS
-            console.error('Server response:', error); //! REMOVE THIS
             throw new Error(`Server error: ${response.status}`);
         }
 
@@ -106,21 +104,16 @@ startBtn.addEventListener('click', async () => {
         console.log('Setup successful:', result);
 
         // Switch to game screen
-        setupScreen.style.display = 'none';
-        gameScreen.style.display = 'block';
+        showGame(await getState())
 
     } catch (error) {
-        console.error('Setup failed:', error); //! REMOVE THIS
-        setupError.textContent = error.message
-        //setupError.textContent = 'Could not start the game. Please try again.'; // ! UNCOMMENT THIS
+        setupError.textContent = 'Could not start the game. Please try again.';
     }
 });
+
 // ── Polling ───────────────────────────────────────────
 async function poll() {
-    const response = await fetch('/state')
-    const state = await response.json()
-
-    render(state)
+    render(await getState())
 
     setTimeout(poll, 100)
 }
@@ -132,22 +125,34 @@ function render(state) {
 
 // ── Init ──────────────────────────────────────────────
 async function init() {
-
-    const response = await fetch('/state');
-    const state = await response.json();
-    console.log('STATE:', state); // ! rEMOVE  THIS
+    const state = await getState()
     
     if (state.is_running) {
         // skip setup, go straight to game screen
-        gameScreen.style.display = 'flex';
-        
-        render(state)
-        poll()
-        // start polling
+        showGame(state)
+
     } else {
         setupScreen.style.display = 'flex';
         loadSetupData();
+
     }
 }
 
+
+// ── Reusable code ────────────────────────────────────────────
+async function getState(){
+    const response = await fetch('/state');
+    return await response.json();
+}
+
+function showGame(state) {
+    setupScreen.style.display = 'none';
+    gameScreen.style.display = 'flex';
+    render(state);
+    poll();
+}
+
 init();
+
+
+
