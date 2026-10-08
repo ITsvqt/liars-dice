@@ -57,27 +57,22 @@
 
         <div class="game-body">
 
-            <!-- Players sidebar -->
-            <aside class="players-panel">
-                <h3>Players</h3>
-                <ul id="players-list"></ul>
-                <p class="total-dice">Total dice: <span id="total-dice">—</span></p>
-            </aside>
+            <!-- Table arena -->
+            <div class="arena-wrap">
+                <div id="arena">
+                    <div class="felt"></div>
+                    <div class="felt-inner"></div>
+                    <svg id="arc-svg" viewBox="0 0 360 360"></svg>
+                    <div id="seats"></div>
+                    <div class="center-info">
+                        <p class="bid-value" id="current-bid">—</p>
+                        <p class="bid-sub" id="bid-sub">no bid yet</p>
+                    </div>
+                </div>
+            </div>
 
             <!-- Main area -->
             <main class="game-main">
-
-                <!-- Current bid -->
-                <div class="bid-display">
-                    <p class="bid-label">Current Bid</p>
-                    <p id="current-bid" class="bid-value">—</p>
-                </div>
-
-                <!-- Human dice -->
-                <div class="your-dice">
-                    <p class="dice-label">Your Dice</p>
-                    <div id="dice-row"></div>
-                </div>
 
                 <!-- Action log -->
                 <div class="log-box">
@@ -85,19 +80,21 @@
                 </div>
 
                 <!-- Human controls -->
-                <div id="controls" class="controls" hidden>
-                    <div class="bid-inputs">
+                <div id="controls" class="controls">
+                    <div class="bid-inputs" id="bid-inputs">
                         <div class="input-group">
-                            <label for="bid-face">Face</label>
+                            <label for="bid-face">Face (1–6)</label>
                             <input type="number" id="bid-face" min="1" max="6" value="1" />
                         </div>
                         <div class="input-group">
                             <label for="bid-qty">Quantity</label>
                             <input type="number" id="bid-qty" min="1" value="1" />
                         </div>
-                        <button class="btn btn--small" id="bid-btn">Bid</button>
                     </div>
-                    <button class="btn btn--ghost" id="challenge-btn">Challenge</button>
+                    <div class="btn-row">
+                        <button class="btn btn--ghost" id="challenge-btn" disabled>Challenge</button>
+                        <button class="btn" id="bid-btn">Bid</button>
+                    </div>
                     <p class="hint error" id="move-error"></p>
                 </div>
 
@@ -114,6 +111,30 @@
         </div>
 
     </section>
+
+    <!-- ── Reveal overlay ───────────────────────────── -->
+    <div class="reveal-overlay" id="reveal-overlay">
+        <div class="reveal-card">
+            <h2 class="reveal-title" id="reveal-title">The Reveal</h2>
+
+            <div class="player-hands" id="player-hands"></div>
+
+            <hr class="reveal-divider">
+
+            <div class="face-counts" id="face-counts"></div>
+
+            <hr class="reveal-divider">
+
+            <div class="result-banner" id="result-banner">
+                <p class="result-verdict" id="result-verdict"></p>
+                <p class="result-detail"  id="result-detail"></p>
+            </div>
+
+            <p class="loser-line" id="loser-line"></p>
+
+            <button class="btn reveal-continue" id="reveal-continue">Continue →</button>
+        </div>
+    </div>
 
     <script src="/static/game/game.js"></script>
 </body>
