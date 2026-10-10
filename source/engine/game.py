@@ -37,8 +37,6 @@ class Game:
     def _set_up(self):
         config = self.ui.get_setup_vars()
         
-        print(config) #! Remove this
-        
         all_players: list[Player] = self._create_ai_players(config["cnt_ai"])
         human_player: Player = self._create_human_player(config["player_name"])
         all_players.append(human_player)
@@ -53,14 +51,20 @@ class Game:
     def start(self):
 
         self.ui.initiate()
-        self._set_up()
-        self.ui.show_prestart(self.players, self.wild_ones)
         
-        while not LiarsDiceRules.is_game_over(self.player_circle):
-            self._play_round()
+        while True:
+            
+            self._set_up()
+            self.ui.show_prestart(self.players, self.wild_ones)
+            
+            while not LiarsDiceRules.is_game_over(self.player_circle):
+                self._play_round()
 
-        winner = self.player_circle.current_player
-        self.ui.show_winner(winner)
+            winner = self.player_circle.current_player
+            action = self.ui.show_winner(winner)
+
+            if action != "restart":
+                break
 
 
     def _play_round(self):
@@ -71,7 +75,7 @@ class Game:
         dice_cnt = sum(dice_face_cnt.values())
         current_bid = None        
         
-        self.ui.show_round(self.cnt_round, active_players, self.wild_ones)
+        self.ui.show_round(self.cnt_round, active_players, dice_cnt, self.wild_ones)
         
         #* Go around the circle, until someone Challenge
         while True:
@@ -84,34 +88,41 @@ class Game:
                 break
             else: #move[0] == 'Bid'
                 current_bid = move[1]
+                bid_holder = player
                 
             self.player_circle.advance()
             
-        self.ui.show_reveal(active_players, dice_face_cnt, self.wild_ones)
+        self.ui.show_reveal(active_players, dice_face_cnt, current_bid, self.wild_ones)
         
         #* Determine the looser
         res = LiarsDiceRules.is_challenge_correct(current_bid, dice_face_cnt, self.wild_ones)
-        loosing_player = player if res is False else self.player_circle.previous_player
+
+        if res is False:
+            loosing_player = player
+            winning_player = self.player_circle.previous_player
+        else:
+            loosing_player = self.player_circle.previous_player
+            winning_player = player
+            
+        #! remove after test
+        # loosing_player = player if res is False else self.player_circle.previous_player
         loosing_player.remove_die()
-        
-        # self.ui.show_message(
-        #     f"Player {loosing_player.name} lost the round"
-        #     f"Dice remaining {loosing_player.cnt_dice}"
-        #     )
         
         #* Check for elmination
         is_eliminated = loosing_player.is_hand_empty()
         
         if is_eliminated is True:
+            # is_challenge_correct => True => previous player lost
             self.player_circle.remove_player(res)
-            # self.ui.show_message(f"Player {loosing_player.name} was elminated")
             
         self.ui.show_round_result(
             loosing_player,
+            winning_player,
             is_eliminated,
             current_bid,
             player,
-            res
+            res,
+            bid_holder
             )        
 
         
@@ -123,7 +134,7 @@ class Game:
                 if player.is_bot:
                     move = player.calc_turn(current_bid, dice_cnt, self.wild_ones)
                 else:
-                    move = self.ui.ask_player_move(current_bid, player, dice_cnt)
+                    move = self.ui.ask_player_move(current_bid, player, dice_cnt, self.wild_ones)
 
                 #* Early exit when move is "Challenge"        
                 if move[0] == "Challenge":

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from models.bid import Bid
     from models.player.base.player import Player
+    from collections import Counter
 
 from abc import ABC, abstractmethod
 
@@ -21,7 +22,7 @@ class GameUI(ABC):
         ...  
     
     @abstractmethod
-    def show_round(self, round_num: int, active_players: list[Player], wild_ones: bool):
+    def show_round(self, round_num: int, active_players: list[Player], dict_cnt: int, wild_ones: bool):
         """Update UI to round start state"""
         ...
         
@@ -35,7 +36,13 @@ class GameUI(ABC):
         ...
         
     @abstractmethod
-    def show_reveal(self, active_players: list[Player], wild_ones: bool):
+    def show_reveal(
+        self,
+        active_players: list[Player],
+        face_counts: Counter,
+        current_bid: Bid,
+        wild_ones: bool
+        ):
         """Update UI to round end state"""
         ...
 
@@ -43,16 +50,20 @@ class GameUI(ABC):
     def show_round_result(
         self,
         loosing_player: Player,
+        winning_player: Player,
         is_eliminated: bool,
         bid: Bid,
         challenger_player: Player,
-        is_challenge_valid: bool):
+        is_challenge_valid: bool,
+        bid_holder: Player
+        ):
         """Update UI to round result state"""
         ...
         
     @abstractmethod
-    def show_winner(self, player: Player):
-        """Update UI to game end state"""
+    def show_winner(self, player: Player) -> bool:
+        """Update UI to game end state
+        Returns: do you want to play again ?"""
         ...
         
         
@@ -67,7 +78,8 @@ class GameUI(ABC):
         ...
     
     @abstractmethod
-    def ask_player_move(self,
+    def ask_player_move(
+        self,
         current_bid: Bid,
         player: Player,
         dice_cnt: int,

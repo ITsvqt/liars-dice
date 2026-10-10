@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liar's Dice — Game</title>
+    <title>Liar's Dice</title>
     <link rel="stylesheet" href="/static/base.css">
     <link rel="stylesheet" href="/static/game/game.css">
 </head>
@@ -13,20 +13,12 @@
     <section id="setup-screen">
         <div class="setup-card">
             <h1>Game Setup</h1>
-
             <div class="field">
                 <label for="player-name">Your Name</label>
-                <input
-                    type="text"
-                    id="player-name"
-                    placeholder="Enter your name"
-                    maxlength="20"
-                    autocomplete="off"
-                />
+                <input type="text" id="player-name" placeholder="Enter your name" maxlength="20" autocomplete="off" />
                 <p class="hint" id="name-hint"></p>
                 <p class="taken-names" id="taken-names"></p>
             </div>
-
             <div class="field">
                 <label>Number of AI Players</label>
                 <div class="stepper">
@@ -35,14 +27,11 @@
                     <button class="stepper-btn" id="ai-inc">+</button>
                 </div>
             </div>
-
             <div class="field field--row">
                 <label for="wild-ones">Wild Ones Mode</label>
                 <input type="checkbox" id="wild-ones" />
             </div>
-
             <p class="hint error" id="setup-error"></p>
-
             <button class="btn" id="start-btn">Confirm</button>
         </div>
     </section>
@@ -50,55 +39,81 @@
     <!-- ── Game screen ──────────────────────────────── -->
     <section id="game-screen" hidden>
 
-        <header class="game-header">
-            <h2 id="round-label">Round 1</h2>
-            <p id="turn-label" class="turn-label"></p>
-        </header>
+        <div class="game-wrap">
 
-        <div class="game-body">
-
-            <!-- Table arena -->
-            <div class="arena-wrap">
-                <div id="arena">
-                    <div class="felt"></div>
-                    <div class="felt-inner"></div>
-                    <svg id="arc-svg" viewBox="0 0 360 360"></svg>
-                    <div id="seats"></div>
-                    <div class="center-info">
-                        <p class="bid-value" id="current-bid">—</p>
-                        <p class="bid-sub" id="bid-sub">no bid yet</p>
-                    </div>
+            <!-- Top row: labels above each column -->
+            <div class="game-top">
+                <div class="game-top-left">
+                    <h2 id="round-label">Round 1</h2>
+                </div>
+                <div class="game-top-center"><!-- spacer --></div>
+                <div class="game-top-right">
+                    <p id="turn-label" class="turn-label"></p>
                 </div>
             </div>
 
-            <!-- Main area -->
-            <main class="game-main">
+            <!-- Main row -->
+            <div class="game-body">
 
-                <!-- Action log -->
-                <div class="log-box">
-                    <ul id="action-log"></ul>
-                </div>
+                <!-- Left panel -->
+                <aside class="players-panel">
+                    <ul id="player-list"></ul>
+                    <div class="panel-divider"></div>
+                    <div class="dice-total">
+                        <span class="dice-total-label">Dice on table</span>
+                        <span class="dice-total-count" id="dice-total">—</span>
+                    </div>
+                    <div class="panel-divider"></div>
+                    <div class="wild-flag" id="wild-flag" hidden>
+                        <span class="wild-flag-label">Wild Ones</span>
+                        <span class="wild-flag-badge">ON</span>
+                    </div>
+                </aside>
 
-                <!-- Human controls -->
-                <div id="controls" class="controls">
-                    <div class="bid-inputs" id="bid-inputs">
-                        <div class="input-group">
-                            <label for="bid-face">Face (1–6)</label>
-                            <input type="number" id="bid-face" min="1" max="6" value="1" />
-                        </div>
-                        <div class="input-group">
-                            <label for="bid-qty">Quantity</label>
-                            <input type="number" id="bid-qty" min="1" value="1" />
+                <!-- Center: board + controls -->
+                <div class="arena-col">
+                    <div id="arena">
+                        <div class="felt"></div>
+                        <div class="felt-inner"></div>
+                        <svg id="arc-svg" viewBox="0 0 520 520"></svg>
+                        <div id="seats"></div>
+                        <div class="center-info">
+                            <p class="bid-value" id="current-bid">—</p>
+                            <p class="bid-sub"   id="bid-sub">no bid yet</p>
                         </div>
                     </div>
-                    <div class="btn-row">
-                        <button class="btn btn--ghost" id="challenge-btn" disabled>Challenge</button>
-                        <button class="btn" id="bid-btn">Bid</button>
+
+                    <!-- Controls: Bid left, inputs below, Challenge right in red -->
+                    <div id="controls" class="controls">
+                        <div class="controls-inner">
+                            <div class="controls-left">
+                                <button class="btn btn--bid" id="bid-btn">Bid</button>
+                                <div class="bid-inputs" id="bid-inputs">
+                                    <div class="input-group">
+                                        <label for="bid-face">Face · 1–6</label>
+                                        <input type="number" id="bid-face" min="1" max="6" value="1" />
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="bid-qty">Quantity</label>
+                                        <input type="number" id="bid-qty" min="1" value="1" />
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn--challenge" id="challenge-btn" disabled>Challenge</button>
+                        </div>
+                        <p class="hint error" id="move-error"></p>
                     </div>
-                    <p class="hint error" id="move-error"></p>
                 </div>
 
-            </main>
+                <!-- Right panel: log -->
+                <aside class="log-col">
+                    <p class="log-title">Log</p>
+                    <div class="log-box">
+                        <ul id="action-log"></ul>
+                    </div>
+                </aside>
+
+            </div>
         </div>
 
         <!-- Game over overlay -->
@@ -116,22 +131,15 @@
     <div class="reveal-overlay" id="reveal-overlay">
         <div class="reveal-card">
             <h2 class="reveal-title" id="reveal-title">The Reveal</h2>
-
             <div class="player-hands" id="player-hands"></div>
-
             <hr class="reveal-divider">
-
             <div class="face-counts" id="face-counts"></div>
-
             <hr class="reveal-divider">
-
             <div class="result-banner" id="result-banner">
                 <p class="result-verdict" id="result-verdict"></p>
                 <p class="result-detail"  id="result-detail"></p>
             </div>
-
             <p class="loser-line" id="loser-line"></p>
-
             <button class="btn reveal-continue" id="reveal-continue">Continue →</button>
         </div>
     </div>

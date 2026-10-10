@@ -58,7 +58,7 @@ class PlayerCircle:
         if previous is True:
             self._remove_node_from_circle(self._current_player.prev)
             
-        else: # previous is False
+        else:
         # if current is removed we should advance the current player and remove the previous
         # this way the starting player of the next round is already set
             self.advance()

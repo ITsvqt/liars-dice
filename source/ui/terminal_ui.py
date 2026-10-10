@@ -93,7 +93,14 @@ class TerminalUI(GameUI):
         
         
         
-    def show_round(self, round_num: int, active_players: list[Player], wild_ones: bool):
+    def show_round(
+        self,
+        round_num: int,
+        active_players: list[Player],
+        dice_cnt: int,
+        wild_ones: bool
+        ):
+        
         self.console.print()
         self.console.rule(f"[bold yellow]⚔  Round {round_num}  ⚔[/bold yellow]", style="yellow")
 
@@ -136,7 +143,13 @@ class TerminalUI(GameUI):
         self.console.print(move_str)
         
         
-    def show_reveal(self, active_players: list[Player], dice_face_count: Counter, wild_ones: bool):
+    def show_reveal(
+        self,
+        active_players: list[Player],
+        dice_face_count: Counter,
+        current_bid: Bid,
+        wild_ones: bool
+        ):
         self.console.print()
         self.console.rule("[bold red]🎲  REVEAL  🎲[/bold red]", style="red")
         self.console.print()
@@ -169,10 +182,12 @@ class TerminalUI(GameUI):
     def show_round_result(
         self,
         loosing_player: Player,
+        winning_player: Player,
         is_eliminated: bool,
         bid: Bid,
         challenger_player: Player,
-        is_challenge_valid: bool
+        is_challenge_valid: bool,
+        bid_holder: Player
         ):
         self.console.print()
         if is_challenge_valid is False:
@@ -196,7 +211,7 @@ class TerminalUI(GameUI):
         
         
         
-    def show_winner(self, player: Player):
+    def show_winner(self, player: Player) -> bool:
         self.console.print()
         self.console.rule("[bold yellow]🏆  GAME OVER  🏆[/bold yellow]", style="yellow")
         icon = "🤖" if player.is_bot else "🎉"
@@ -210,13 +225,17 @@ class TerminalUI(GameUI):
             )
         )
         self.console.print()
+        
+        return self._ask_bool("Do you want to play again", default=False)
 
         
-    def ask_player_move(self,
+    def ask_player_move(
+        self,
         current_bid: Bid,
         player: Player,
         dice_cnt: int,
-        wild_ones: bool = False):
+        wild_ones: bool = False
+        ):
         
         player_dice = player.values
         #* Show human_player hand,
