@@ -22,7 +22,7 @@ class Player(ABC):
         """List of all player dice values."""
         self._ensure_hand_is_not_empty(Player.values)
         
-        return [d.value for d in self.hand]
+        return sorted([d.value for d in self.hand])
     
     
     def roll(self):

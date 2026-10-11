@@ -17,7 +17,7 @@ class AIPlayer(Player):
             
     def calc_turn(self, current_bid: Bid | None, total_dice: int, wild_ones: bool) -> tuple[str, Bid | None]:
         """Returns ('bid', Bid) or ('challenge', None)."""
-        time.sleep(random.uniform(0.6, 1.4))  # Simulate thinking
+        time.sleep(random.uniform(1, 3))  # Simulate thinking
 
         unknown_dice = total_dice - self.cnt_dice
 
