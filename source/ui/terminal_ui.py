@@ -156,7 +156,7 @@ class TerminalUI(GameUI):
         
         for p in active_players:
             symbols = "  ".join(self.FACE_SYMBOLS[v] for v in sorted(p.values))
-            values_str = ", ".join(str(v) for v in sorted(p.values))
+            values_str = ", ".join(str(v) for v in p.values)
             tag = "[cyan]Bot[/cyan]" if p.is_bot else "[yellow]You[/yellow]"
             self.console.print(f"  {tag} [bold]{p.name}:[/bold]  {symbols}  [dim]({values_str})[/dim]")
             

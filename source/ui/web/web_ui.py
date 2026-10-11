@@ -18,7 +18,7 @@ class WebUI(GameUI):
         #* Browser info
         self.state = {              # Hint  # SET BY
             "is_running": False,    # bool  # get_setup_vars
-            "phase": "waiting",                 # str   # show,round, reveal, winner ("playing" / "reveal" / "game_over")
+            "phase": "waiting",     # str   # show,round, reveal, winner ("playing" / "reveal" / "game_over")
             "round": None,          # int   # show round : int
             "players": [],          # player.to_dict()  # show round
             "current_player": None, # str(name)  # show_turn_header {}
@@ -28,7 +28,8 @@ class WebUI(GameUI):
             "reveal": None,         # dict  # show_reveal, round_results
             "log": [],              # list # any method 
             "winner": None,         # str(name)  # show winner
-            "wild_ones": False,      # bool # get_setup_vars
+            "wild_ones": False,     # bool # get_setup_vars
+            "player_hand": []       # human_player hand
         }
         
         #* Setup
@@ -73,7 +74,9 @@ class WebUI(GameUI):
         Should display current Bid and Dice_cnt\n
         Returns ("Challenge", None) | ("Bid", (face, quantity))"""
 
-        #TODO no parameters used
+        if not self.state["player_hand"]:
+            self.state["player_hand"] = player.values
+        
         self.move_event.clear()
         self.move_data = None
         
@@ -173,6 +176,8 @@ class WebUI(GameUI):
 
         if is_eliminated:
             self.state["log"].append(f"{loser_player.name} is eliminated!")
+            
+        self.state["player_hand"] = []
             
         self.reveal_event.wait()
         self.reveal_event.clear()
