@@ -194,7 +194,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 
 .seat-name {
     font-family: 'Palatino Linotype', Palatino, serif;
-    font-size: 11.5px; color: var(--text-dim);
+    font-size: 13px; color: var(--text-dim);
     text-align: center; white-space: nowrap;
     max-width: 90px; overflow: hidden; text-overflow: ellipsis; transition: color 0.4s;
 }
@@ -367,8 +367,8 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 }
 .hand-name {
     font-family: 'Palatino Linotype', Palatino, serif;
-    font-size: 12px; color: var(--text-dim);
-    width: 70px; flex-shrink: 0;
+    font-size: 15px; color: var(--text-dim);
+    width: 85px; flex-shrink: 0;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .hand-dice { display: flex; gap: 3px; flex-wrap: wrap; flex: 1; }
@@ -386,11 +386,14 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .face-cell.bid-face { border-color: var(--gold); background: rgba(201,168,76,0.08); }
 .face-die { font-size: 20px; line-height: 1; }
 .face-cell.bid-face .face-die { color: var(--gold); }
+.face-cell.wild-face { border-color: #7b4fa6; background: rgba(123,79,166,0.08); }
+.face-cell.wild-face .face-die { color: #7b4fa6; }
 .face-count { font-size: 15px; font-weight: 600; color: var(--text); }
 .face-label {
     font-family: 'Palatino Linotype', Palatino, serif;
     font-size: 9px; color: var(--text-dim); letter-spacing: 0.05em; text-transform: uppercase; min-height: 10px;
 }
+
 
 .result-banner {
     border-radius: var(--radius); padding: 0.9rem 1rem;
@@ -403,7 +406,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
     font-family: 'Palatino Linotype', Palatino, serif; font-size: 1.1rem; font-weight: 700;
 }
 .challenger-wins .result-verdict { color: #e05050; }
-.bidder-wins     .result-verdict { color: var(--gold); }
+.bidder-wins     .result-verdict { color: var(--text); }
 .result-detail { font-family: 'Palatino Linotype', Palatino, serif; font-size: 0.9rem; color: var(--text-dim); }
 
 .loser-line { font-family: 'Palatino Linotype', Palatino, serif; text-align: center; font-size: 0.9rem; color: var(--text-dim); }
