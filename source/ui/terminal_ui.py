@@ -226,7 +226,7 @@ class TerminalUI(GameUI):
         )
         self.console.print()
         
-        return self._ask_bool("Do you want to play again", default=False)
+        return 'restart' if self._ask_bool("Do you want to play again", default=False) else 'quit'
 
         
     def ask_player_move(

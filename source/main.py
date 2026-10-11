@@ -9,7 +9,7 @@ from ui.web import server
 
 if __name__ ==  '__main__':
     
-    IS_UI_WEB = True
+    IS_UI_WEB = False
 
     if IS_UI_WEB:
         
