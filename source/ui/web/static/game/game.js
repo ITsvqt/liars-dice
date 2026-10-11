@@ -3,6 +3,15 @@ const DICE_SYMBOLS = ['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 const FACE_NAMES   = { 1:'Ones', 2:'Twos', 3:'Threes', 4:'Fours', 5:'Fives', 6:'Sixes' };
 const minName = 3, maxName = 15;
 
+const CARD_LAYOUTS = {
+    1: [{ col:'1/-1', row:'1/-1', center:true }],
+    2: [{ col:1,row:1 },{ col:2,row:3 }],
+    3: [{ col:1,row:1 },{ col:2,row:2 },{ col:1,row:3 }],
+    4: [{ col:1,row:1 },{ col:2,row:1 },{ col:1,row:3 },{ col:2,row:3 }],
+    5: [{ col:1,row:1 },{ col:2,row:1 },{ col:'1/-1',row:2,center:true },{ col:1,row:3 },{ col:2,row:3 }],
+    6: [{ col:1,row:1 },{ col:2,row:1 },{ col:1,row:2 },{ col:2,row:2 },{ col:1,row:3 },{ col:2,row:3 }],
+};
+
 // ── Arena geometry ─────────────────────────────────────
 // Larger arena: 480x480, radius 168
 const CX = 260, CY = 260, R = 182;
@@ -267,6 +276,52 @@ function buildPlayerPanel(players, currentPlayerName, bidHolderName, diceTotal, 
     // Wild ones flag
     const wildFlag = document.getElementById('wild-flag');
     if (wildFlag) wildFlag.hidden = !wildOnesMode;
+
+}
+
+let _lastHand = null;
+
+/* Human player dice face value as cards */
+function buildHandCards(hand) {
+
+    // Terminate early if the hand hasn't changed
+    const key = hand ? hand.join(',') : '';
+    if (key === _lastHand) return;
+    _lastHand = key;
+
+    const wrap = document.getElementById('player-hand-cards');
+    const divider = document.getElementById('hand-divider');
+    if (!wrap) return;
+
+    wrap.innerHTML = '';
+    if (!hand || !hand.length) {
+        divider.style.display = 'none';
+        return;
+    }
+    divider.style.display = '';
+
+    hand.forEach(v => {
+        const cardWrap = document.createElement('div');
+        cardWrap.className = 'card-wrap';
+
+        const num = document.createElement('span');
+        num.className = 'card-num';
+        num.textContent = v;
+        cardWrap.appendChild(num);
+
+        const card = document.createElement('div');
+        card.className = 'dice-card';
+        CARD_LAYOUTS[v].forEach(p => {
+            const pip = document.createElement('span');
+            pip.className = 'pip-heart' + (p.center ? ' center' : '');
+            pip.textContent = '♥';
+            pip.style.gridColumn = p.col;
+            pip.style.gridRow = p.row;
+            card.appendChild(pip);
+        });
+        cardWrap.appendChild(card);
+        wrap.appendChild(cardWrap);
+    });
 }
 
 
@@ -372,22 +427,34 @@ function showReveal(state) {
     });
 
     // Face counts — keys are strings from Python dict
+
     const fc = document.getElementById('face-counts');
     fc.innerHTML = '';
     for (let f = 1; f <= 6; f++) {
         const cell = document.createElement('div');
-        cell.className = 'face-cell' + (f === current_bid.face_value ? ' bid-face' : '');
+        const isWild = state.wild_ones && f === 1;
+        const isBidFace = f === current_bid.face_value && !isWild;
+
+        cell.className = 'face-cell'
+            + (isBidFace ? ' bid-face' : '')
+            + (isWild ? ' wild-face' : '');
         cell.innerHTML = `<span class="face-die">${DICE_SYMBOLS[f]}</span>
-                          <span class="face-count">${reveal.face_counts[String(f)] ?? 0}</span>
-                          <span class="face-label">${f === current_bid.face_value ? 'bid' : ''}</span>`;
+                      <span class="face-label"></span>
+                      <span class="face-count">${reveal.face_counts[String(f)] ?? 0}</span>`;
         fc.appendChild(cell);
     }
+
+    const rawCount  = reveal.face_counts[String(current_bid.face_value)] ?? 0;
+    const wildCount = (state.wild_ones && current_bid.face_value !== 1)
+        ? (reveal.face_counts["1"] ?? 0) : 0;
+    const actual    = rawCount + wildCount;
+    const wildNote  = wildCount > 0 ? ` (+${wildCount} wild)` : ``;
 
     // Result banner
     const banner  = document.getElementById('result-banner');
     const verdict = document.getElementById('result-verdict');
     const detail  = document.getElementById('result-detail');
-    const actual  = reveal.face_counts[String(current_bid.face_value)] ?? 0;
+
 
     if (reveal.challenge_valid) {
         banner.className    = 'result-banner challenger-wins';
@@ -407,14 +474,22 @@ function showReveal(state) {
 }
 
 // ════════════════════════════════════════════════════════
-// RESTART BUTTON
+// GAME END
 // ════════════════════════════════════════════════════════
 
 
-document.getElementById('play-again-btn').addEventListener('click', async () => {
+document.getElementById('restart-btn').addEventListener('click', async () => {
     document.getElementById('game-over').hidden = true;
     await fetch('/restart', { method: 'POST' });
-    // poll will pick up the new state automatically
+    setupScreen.style.display = 'flex';
+    gameScreen.style.display  = 'none';
+    seatOrder = null;
+    loadSetupData();
+});
+
+document.getElementById('quit-btn').addEventListener('click', async () => {
+    await fetch('/quit', { method: 'POST' });
+    window.close();
 });
 
 // ════════════════════════════════════════════════════════
@@ -450,7 +525,7 @@ function render(state) {
 
     // Left panel
     buildPlayerPanel(state.players, state.current_player, state.bid_holder, state.dice_count, state.wild_ones);
-
+    buildHandCards(state.player_hand);
     // Log — rebuild with full state.log; append round result lines when in reveal phase
     const log    = document.getElementById('action-log');
     const logBox = log.parentElement;

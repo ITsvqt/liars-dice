@@ -150,6 +150,34 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
     padding: 1px 6px; letter-spacing: 0.06em;
 }
 
+/* Dice face as cards */
+.hand-cards {
+    display: flex; flex-wrap: wrap; gap: 5px;
+    justify-content: center; padding-top: 0.25rem;
+}
+.card-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.card-num {
+    font-family: 'Palatino Linotype', Palatino, serif;
+    font-size: 11px; color: var(--gold); font-weight: 700; line-height: 1;
+}
+.dice-card {
+    width: 34px; height: 48px;
+    background: var(--bg);
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    padding: 4px; gap: 2px;
+}
+.pip-heart {
+    color: var(--gold); font-size: 8px;
+    display: flex; align-items: center; justify-content: center; line-height: 1;
+}
+.pip-heart.center { grid-column: 1 / -1; }
+
 
 /* ════════════════════════════════════════════════════════
    CENTER — BOARD + CONTROLS
@@ -307,24 +335,6 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 
 
 /* ════════════════════════════════════════════════════════
-   GAME OVER
-════════════════════════════════════════════════════════ */
-
-.game-over-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.78);
-    display: flex; align-items: center; justify-content: center; z-index: 200;
-}
-.game-over-overlay[hidden] { display: none; }
-.game-over-card {
-    background: var(--surface); border: 1px solid var(--gold);
-    border-radius: var(--radius); padding: 2.5rem;
-    text-align: center; display: flex; flex-direction: column; gap: 1.25rem;
-    max-width: 360px; width: 100%;
-}
-.game-over-card p { font-family: 'Palatino Linotype', Palatino, serif; color: var(--text-dim); font-size: 1rem; }
-
-
-/* ════════════════════════════════════════════════════════
    REVEAL OVERLAY
 ════════════════════════════════════════════════════════ */
 
@@ -416,3 +426,22 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
     border: 1px solid var(--red); border-radius: 3px; padding: 1px 5px; vertical-align: middle;
 }
 .reveal-continue { width: 100%; padding: 0.65rem; font-size: 0.95rem; }
+
+
+/* ════════════════════════════════════════════════════════
+   GAME OVER
+════════════════════════════════════════════════════════ */
+
+.game-over-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.78);
+    display: flex; align-items: center; justify-content: center; z-index: 200;
+}
+.game-over-overlay[hidden] { display: none; }
+.game-over-card {
+    background: var(--surface); border: 1px solid var(--gold);
+    border-radius: var(--radius); padding: 2.5rem;
+    text-align: center; display: flex; flex-direction: column; gap: 1.25rem;
+    max-width: 360px; width: 100%;
+}
+.game-over-card p { font-family: 'Palatino Linotype', Palatino, serif; color: var(--text-dim); font-size: 1rem; }
+

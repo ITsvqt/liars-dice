@@ -68,6 +68,8 @@
                         <span class="wild-flag-label">Wild Ones</span>
                         <span class="wild-flag-badge">ON</span>
                     </div>
+                    <div class="panel-divider" id="hand-divider"></div>
+                    <div class="hand-cards" id="player-hand-cards"></div>
                 </aside>
 
                 <!-- Center: board + controls -->
@@ -90,12 +92,12 @@
                                 <button class="btn btn--bid" id="bid-btn">Bid</button>
                                 <div class="bid-inputs" id="bid-inputs">
                                     <div class="input-group">
-                                        <label for="bid-face">Face · 1–6</label>
-                                        <input type="number" id="bid-face" min="1" max="6" value="1" />
-                                    </div>
-                                    <div class="input-group">
                                         <label for="bid-qty">Quantity</label>
                                         <input type="number" id="bid-qty" min="1" value="1" />
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="bid-face">Face · 1–6</label>
+                                        <input type="number" id="bid-face" min="1" max="6" value="1" />
                                     </div>
                                 </div>
                             </div>
@@ -121,7 +123,8 @@
             <div class="game-over-card">
                 <h2 id="game-over-title">Game Over</h2>
                 <p id="game-over-msg"></p>
-                <a href="/static/game/game.html" class="btn">Play Again</a>
+                <button class="btn" id="restart-btn">Play Again</button>
+                <button class="btn btn--ghost" id="quit-btn">Quit</button>
             </div>
         </div>
 

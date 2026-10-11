@@ -150,7 +150,7 @@ class Game:
                         if LiarsDiceRules.is_new_bid_valid(current_bid, new_bid):
                             
                             return (move[0], new_bid)
-                        
+                        self.ui.show_error("New bid must be higher than the last")
                     except ValueError as e:
                         self.ui.show_error(e)
                         
