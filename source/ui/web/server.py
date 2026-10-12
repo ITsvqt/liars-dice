@@ -56,8 +56,19 @@ def send_constants():
 # *** SEND GAME SETTINGS ***
 @app.post("/setup")
 def receive_game_setup(data: dict = Body()):
+    
+    if not web_ui.reload_state_event.wait(timeout=10):
+        return JSONResponse(
+            status_code=503,
+            content= {"error": "Game reset timed out"}
+        )
+    
     if web_ui.state["is_running"]:
-        return JSONResponse(status_code = 400, content = {"error": "Game already in progress"})
+        return JSONResponse(
+            status_code = 400,
+            content = {"error": "Game already in progress"}
+        )
+    
     web_ui.setup_data = data
     web_ui.setup_event.set()
     
@@ -83,16 +94,16 @@ def reveal_continue():
     web_ui.reveal_event.set()
     return {"success": True}
 
-# *** END GAME ***
 
+# *** END GAME ***
 @app.post("/restart")
 def restart():
-    web_ui.restart_data = "restart"
+    web_ui.restart_data = True
     web_ui.restart_event.set()
     return {"success": True}
 
 @app.post("/quit")
 def quit():
-    web_ui.restart_data = "quit"
+    web_ui.restart_data = False
     web_ui.restart_event.set()
     return {"success": True}

@@ -12,10 +12,32 @@ from ui.base.ui import GameUI
 
 
 class WebUI(GameUI):
-    
+
     def __init__(self):
+        #* Setup
+        self.setup_event = threading.Event()
+
+        #* Player move
+        self.move_event = threading.Event()
         
-        #* Browser info
+        #* Reveal
+        self.reveal_event = threading.Event()
+
+        #* Restart
+        self.restart_event = threading.Event()
+        
+        #* Reload Data
+        self.reload_state_event = threading.Event()
+        self.reload_state_event.set()
+
+
+    def initiate(self):
+        """Set starting  web_UI state"""
+        
+        #* Reset starting
+        self.reload_state_event.clear()
+        
+        #* Game state for web render
         self.state = {              # Hint  # SET BY
             "is_running": False,    # bool  # get_setup_vars
             "phase": "waiting",     # str   # show,round, reveal, winner ("playing" / "reveal" / "game_over")
@@ -32,25 +54,18 @@ class WebUI(GameUI):
             "player_hand": []       # human_player hand
         }
         
-        #* Setup
-        self.setup_event = threading.Event()
+
         self.setup_data: dict | None = None 
-
-        #* Player move
-        self.move_event = threading.Event()
         self.move_data = None
-        
-        #* Reveal
-        self.reveal_event = threading.Event()
-
-        #* Restart
-        self.restart_event = threading.Event()
         self.restart_data = None
+        self.setup_event.clear()
+        
+        #* Reset finished
+        self.reload_state_event.set()
         
         
-
-
-
+        
+        
     def get_setup_vars(self) -> dict:
         """
         Return:
@@ -189,26 +204,14 @@ class WebUI(GameUI):
         self.state["winner"] = player.name
         self.state["log"].append(f"🏆 {player.name} wins the game!")
         
+
+        
+    def ask_replay_game(self) -> bool:
+        """Restart game after finish ?"""
         self.restart_event.wait()
         self.restart_event.clear()
-        
-        action = self.restart_data
-        # reset state for new game
-        self.state["is_running"] = False
-        self.state["phase"]      = "waiting"
-        self.state["winner"]     = None
-        self.state["log"]        = []
-        
-        return True if action == "restart" else False
-        
-        
-        
-        
-
-
-        
-        
-        
+                
+        return self.restart_data
     
     def show_message(self, msg: str):
         self.state["log"].append(msg)
@@ -220,8 +223,4 @@ class WebUI(GameUI):
     def ask_confirmation(self, msg: str):
         pass  # no blocking confirmation in web UI
         
-        
-    def initiate(self):
-        """Start UI"""
-        pass # server is already running before game starts
         

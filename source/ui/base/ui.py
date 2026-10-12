@@ -66,6 +66,11 @@ class GameUI(ABC):
         Returns: do you want to play again ?"""
         ...
         
+    @abstractmethod
+    def ask_replay_game(self) -> bool:
+        """Restart game after finish ?"""
+        ...
+        
         
     @abstractmethod
     def get_setup_vars(self) -> dict:

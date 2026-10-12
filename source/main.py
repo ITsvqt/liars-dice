@@ -9,7 +9,8 @@ from ui.web import server
 
 if __name__ ==  '__main__':
     
-    IS_UI_WEB = False
+
+    IS_UI_WEB = True
 
     if IS_UI_WEB:
         
@@ -21,8 +22,8 @@ if __name__ ==  '__main__':
         # and the game loop on the background  thread
         thread = Thread(target = game.start)
         thread.start()
-        
         uvicorn.run("ui.web.server:app") #* , reload = True
+        
     else: # TERMINAl
         terminal_ui = TerminalUI()
         game = Game(terminal_ui)

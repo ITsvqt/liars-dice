@@ -484,7 +484,6 @@ document.getElementById('restart-btn').addEventListener('click', async () => {
     setupScreen.style.display = 'flex';
     gameScreen.style.display  = 'none';
     seatOrder = null;
-    loadSetupData();
 });
 
 document.getElementById('quit-btn').addEventListener('click', async () => {

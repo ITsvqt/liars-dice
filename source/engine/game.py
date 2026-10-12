@@ -30,7 +30,7 @@ class Game:
         self.player_circle: PlayerCircle = None  # active players
         self.wild_ones = None
         self.human_player: HumanPlayer = None #! the idea was to display the hand of this player, but the refference ended up useless for now ( check the game loop if its not there, its useless)
-        self.cnt_round: int = 0
+
 
         
         
@@ -50,10 +50,9 @@ class Game:
 
     def start(self):
 
-        self.ui.initiate()
-        
         while True:
-            
+            self.cnt_round: int = 0
+            self.ui.initiate()
             self._set_up()
             self.ui.show_prestart(self.players, self.wild_ones)
             
@@ -61,9 +60,9 @@ class Game:
                 self._play_round()
 
             winner = self.player_circle.current_player
-            action = self.ui.show_winner(winner)
+            self.ui.show_winner(winner)
 
-            if action != "restart":
+            if self.ui.ask_replay_game() is False:
                 break
 
 

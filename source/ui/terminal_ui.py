@@ -226,8 +226,11 @@ class TerminalUI(GameUI):
         )
         self.console.print()
         
-        return 'restart' if self._ask_bool("Do you want to play again", default=False) else 'quit'
+        
 
+    def ask_replay_game(self) -> bool:
+        """Restart game after finish ?"""
+        return self._ask_bool("Do you want to play again", default=False)
         
     def ask_player_move(
         self,
