@@ -386,8 +386,8 @@ challengeBtn.addEventListener('click', async () => {
 
 document.getElementById('reveal-continue').addEventListener('click', async () => {
     revealOverlay.classList.remove('show');
-    revealShown = false;
     await fetch('/reveal_continue', { method: 'POST' });
+    revealShown = false;
 });
 
 
@@ -401,7 +401,6 @@ function showReveal(state) {
     if (state.phase === 'reveal' && state.reveal && state.reveal.winner && !revealShown) {
     console.log('reveal trigger hit', state.reveal.winner, revealShown);
     revealShown = true;
-    showReveal(state);
     }                                                               //! Remove this
     const { round, players, current_bid, reveal } = state;
 
@@ -484,6 +483,8 @@ document.getElementById('restart-btn').addEventListener('click', async () => {
     setupScreen.style.display = 'flex';
     gameScreen.style.display  = 'none';
     seatOrder = null;
+    revealShown = false;
+    revealOverlay.classList.remove('show');
 });
 
 document.getElementById('quit-btn').addEventListener('click', async () => {
@@ -570,18 +571,28 @@ function render(state) {
         bidBtn.disabled       = true;
     }
 
-    // Reveal overlay — show once per reveal, not on every poll tick
-    if (state.phase === 'reveal' && state.reveal && state.reveal.winner && !revealShown) {
-        revealShown = true;
-        showReveal(state);
+    if (state.show_reveal){
+        if(!revealShown){
+            revealShown = true;
+            showReveal(state);
+        }
+    }else{
+        revealOverlay.classList.remove('show');
     }
-    // Reset guard when phase leaves reveal
-    if (state.phase !== 'reveal') {
-        revealShown = false;
-    }
+    // //!asd
+    // // Reveal overlay — show once per reveal, not on every poll tick
+    // if (state.phase === 'reveal' && state.reveal && state.reveal.winner && !revealShown) {
+    //     revealShown = true;
+    //     showReveal(state);
+    // }
+    // // Reset guard when phase leaves reveal
+    // if (state.phase !== 'reveal') {
+    //     revealShown = false;
+    // }
+    // //!asd
 
     // Game over
-    if (state.winner) {
+    if (state.phase === 'game_over' && state.winner && !state.show_reveal){
         document.getElementById('game-over').hidden = false;
         document.getElementById('game-over-title').textContent =
             state.winner === state.players.find(p => !p.is_bot)?.name ? '🏆 You Win!' : 'Game Over';

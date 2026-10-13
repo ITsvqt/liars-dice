@@ -51,7 +51,8 @@ class WebUI(GameUI):
             "log": [],              # list # any method 
             "winner": None,         # str(name)  # show winner
             "wild_ones": False,     # bool # get_setup_vars
-            "player_hand": []       # human_player hand
+            "player_hand": [],       # human_player hand
+            "show_reveal": False
         }
         
 
@@ -117,6 +118,7 @@ class WebUI(GameUI):
         self.state["current_bid"] = None
         self.state["bid_holder"] = None
         self.state["reveal"] = None
+        self.state["show_reveal"] = False
         
         #* Set round data
         self.state["phase"] = "playing"
@@ -193,13 +195,16 @@ class WebUI(GameUI):
             self.state["log"].append(f"{loser_player.name} is eliminated!")
             
         self.state["player_hand"] = []
+        self.state["show_reveal"] = True
             
         self.reveal_event.wait()
+        self.state["show_reveal"] = False
         self.reveal_event.clear()
         
         
     def show_winner(self, player: Player) -> bool:
         """Update UI to game end state"""
+        self.state["show_reveal"] = False
         self.state["phase"] = "game_over"
         self.state["winner"] = player.name
         self.state["log"].append(f"🏆 {player.name} wins the game!")
