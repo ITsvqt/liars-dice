@@ -2,7 +2,10 @@ from ui.terminal_ui import TerminalUI
 from engine.game import Game
 
 class TerminalGameRunner:
-    def run(self):
+    
+    @classmethod
+    def run(cls):
+        
         terminal_ui = TerminalUI()
         game = Game(terminal_ui)
         game.start()

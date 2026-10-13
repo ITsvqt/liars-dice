@@ -18,4 +18,3 @@ AI_PLAYERS = {
 }
 
 RESERVED_NAMES = set(AI_PLAYERS.keys())
-#todo: add enum types for: move_type, 

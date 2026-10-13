@@ -7,19 +7,17 @@ from engine.game import Game
 
 
 class WebGameRunner:
-    def run(self):
+    
+    @classmethod
+    def run(cls):
+        """ Server runs on main thread. And game loop on branch thread."""
+        
         web_ui = WebUI()
         server.set_ui(web_ui)
         
         game = Game(web_ui)
-        game_thread = Thread(target = game.start)
+        game_thread = Thread(target = game.start, daemon=True)
         game_thread.start()
-        
-        
-        try:
-            uvicorn.run("ui.web.server:app")
-        finally:
-            web_ui.shutdown()
-            game_thread.join(timeout=5)
-        # Run the server on the main thread
-        # and the game loop on the background  thread
+                
+        uvicorn.run("ui.web.server:app")
+       
