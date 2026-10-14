@@ -47,9 +47,7 @@
                     <h2 id="round-label">Round 1</h2>
                 </div>
                 <div class="game-top-center"><!-- spacer --></div>
-                <div class="game-top-right">
-                    <p id="turn-label" class="turn-label"></p>
-                </div>
+                <div class="game-top-right"><!-- spacer --></div>
             </div>
 
             <!-- Main row -->
@@ -58,15 +56,26 @@
                 <!-- Left panel -->
                 <aside class="players-panel">
                     <ul id="player-list"></ul>
-                    <div class="panel-divider"></div>
-                    <div class="dice-total">
-                        <span class="dice-total-label">Dice on table</span>
-                        <span class="dice-total-count" id="dice-total">—</span>
+                    <div class="panel-divider" id="wild-divider"></div>
+                    <div class="wild-flag" id="wild-flag">
+                        <span class="wild-flag-label">Wild Ones Mode</span>
+                        <span class="wild-flag-badge off">OFF</span>
                     </div>
                     <div class="panel-divider"></div>
-                    <div class="wild-flag" id="wild-flag" hidden>
-                        <span class="wild-flag-label">Wild Ones</span>
-                        <span class="wild-flag-badge">ON</span>
+                    <div class="panel-stats">
+                        <div class="dice-total">
+                            <span class="dice-total-label">Dice on table</span>
+                            <span class="dice-total-count" id="dice-total">—</span>
+                        </div>
+                        <div class="panel-divider panel-divider--v"></div>
+                        <div class="current-bid-panel">
+                            <span class="current-bid-label">Current bid</span>
+                            <div class="current-bid-value">
+                                <span id="panel-bid-qty">—</span>
+                                <span class="bid-x" id="panel-bid-x">×</span>
+                                <span id="panel-bid-die" class="panel-bid-die"></span>
+                            </div>
+                        </div>
                     </div>
                     <div class="panel-divider" id="hand-divider"></div>
                     <div class="hand-cards" id="player-hand-cards"></div>
@@ -77,7 +86,7 @@
                     <div id="arena">
                         <div class="felt"></div>
                         <div class="felt-inner"></div>
-                        <svg id="arc-svg" viewBox="0 0 520 520"></svg>
+                        <svg id="arc-svg" viewBox="0 0 572 572"></svg>
                         <div id="seats"></div>
                         <div class="center-info">
                             <p class="bid-value" id="current-bid">—</p>
@@ -113,6 +122,7 @@
                     <div class="log-box">
                         <ul id="action-log"></ul>
                     </div>
+                    <p id="turn-label" class="turn-label"></p>
                 </aside>
 
             </div>

@@ -62,17 +62,13 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 
 /* ── Top label row ── */
 .game-top { display: flex; width: 100%; align-items: flex-end; }
-.game-top-left  { width: 240px; flex-shrink: 0; display: flex; justify-content: center; }
-.game-top-center { width: 520px; flex-shrink: 0; }   /* matches board */
-.game-top-right { width: 440px; flex-shrink: 0; display: flex; justify-content: center; }
+.game-top-left  { width: 340px; flex-shrink: 0; display: flex; justify-content: center; }
+.game-top-center { width: 572px; flex-shrink: 0; }   /* matches board */
+.game-top-right { width: 360px; flex-shrink: 0; display: flex; justify-content: center; }
 
 .game-top-left h2 {
     font-family: 'Palatino Linotype', Palatino, serif;
     font-size: 1.2rem; color: var(--gold);
-}
-.turn-label {
-    font-family: 'Palatino Linotype', Palatino, serif;
-    font-size: 1.05rem; color: var(--text-dim); font-style: italic;
 }
 
 /* ── Main row: panels don't stretch, sit at top ── */
@@ -88,7 +84,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 ════════════════════════════════════════════════════════ */
 
 .players-panel {
-    width: 240px; flex-shrink: 0;
+    width: 340px; flex-shrink: 0;
     border: 2px solid var(--gold-dim);
     border-radius: var(--radius);
     padding: 1.1rem 1.1rem 1rem;
@@ -123,7 +119,23 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 
 .panel-divider { border-top: 1px solid var(--gold-dim); margin: 0.85rem 0 0.75rem; }
 
-.dice-total { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; }
+/* Stats row: dice-on-table + current bid side by side */
+.panel-stats { display: flex; align-items: center; gap: 0.75rem; }
+.panel-divider--v { border-top: none; border-left: 1px solid var(--gold-dim); margin: 0; align-self: stretch; }
+.current-bid-panel { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+.current-bid-label {
+    font-family: 'Palatino Linotype', Palatino, serif;
+    font-size: 0.75rem; color: var(--text-dim); letter-spacing: 0.07em; text-transform: uppercase;
+}
+.current-bid-value { display: flex; align-items: center; gap: 0.4rem; }
+#panel-bid-qty {
+    font-family: 'Palatino Linotype', Palatino, serif;
+    font-size: 1.9rem; color: var(--gold); font-weight: 700; line-height: 1;
+}
+.bid-x { font-family: 'Palatino Linotype', Palatino, serif; font-size: 1.1rem; color: var(--text-dim); }
+.panel-bid-die { display: inline-flex; }
+
+.dice-total { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.15rem; }
 .dice-total-label {
     font-family: 'Palatino Linotype', Palatino, serif;
     font-size: 0.75rem; color: var(--text-dim); letter-spacing: 0.07em; text-transform: uppercase;
@@ -135,7 +147,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 
 /* Wild ones flag */
 .wild-flag {
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center; justify-content: center;
     gap: 0.5rem;
 }
 .wild-flag[hidden] { display: none; }
@@ -145,10 +157,12 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 }
 .wild-flag-badge {
     font-family: 'Palatino Linotype', Palatino, serif;
-    font-size: 0.72rem; color: var(--gold);
-    border: 1px solid var(--gold-dim); border-radius: 3px;
+    font-size: 0.72rem;
+    border: 1px solid; border-radius: 3px;
     padding: 1px 6px; letter-spacing: 0.06em;
 }
+.wild-flag-badge.on  { color: #7b4fa6; border-color: #7b4fa6; background: rgba(123,79,166,0.12); }
+.wild-flag-badge.off { color: var(--text-dim); border-color: var(--text-dim); }
 
 /* Dice face as cards */
 .hand-cards {
@@ -163,7 +177,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
     font-size: 11px; color: var(--gold); font-weight: 700; line-height: 1;
 }
 .dice-card {
-    width: 34px; height: 48px;
+    width: 46px; height: 46px;
     background: var(--bg);
     border: 1px solid var(--gold);
     border-radius: 4px;
@@ -189,8 +203,8 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 }
 
 #arena {
-    position: relative; width: 520px; height: 520px; flex-shrink: 0;
-    margin-top: -16px;   /* push board up slightly */
+    position: relative; width: 572px; height: 572px; flex-shrink: 0;
+    margin-top: -48px;   /* push board up more */
 }
 
 .felt {
@@ -252,7 +266,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 }
 
 /* ── Controls: Bid+inputs on left, Challenge on right ── */
-.controls { width: 520px; display: flex; flex-direction: column; gap: 0.4rem; }
+.controls { width: 572px; display: flex; flex-direction: column; gap: 0.4rem; }
 
 .controls-inner {
     display: flex; align-items: stretch; gap: 0.7rem;
@@ -302,11 +316,12 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 ════════════════════════════════════════════════════════ */
 
 .log-col {
-    width: 440px; flex-shrink: 0;
+    width: 360px; flex-shrink: 0;
     border: 2px solid var(--gold-dim); border-radius: var(--radius);
     display: flex; flex-direction: column;
-    padding: 1.1rem 1.1rem 1rem; gap: 0.55rem;
+    padding: 1.6rem 1.1rem; gap: 0.55rem;
     align-self: flex-start;
+    position: relative;
     /* fixed total height — log-box scrolls inside it */
     height: 400px;
 }
@@ -315,7 +330,17 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
     font-family: 'Palatino Linotype', Palatino, serif;
     font-size: 0.8rem; color: var(--text-dim);
     letter-spacing: 0.1em; text-transform: uppercase;
-    flex-shrink: 0; text-align: center;
+    position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%);
+    background: var(--bg); padding: 0 0.7rem; white-space: nowrap;
+    text-align: center;
+}
+
+.turn-label {
+    position: absolute; bottom: 0; left: 1.1rem; transform: translateY(50%);
+    background: var(--bg); padding: 0 0.6rem 0 0;
+    text-align: left; white-space: nowrap;
+    font-family: 'Palatino Linotype', Palatino, serif;
+    font-size: 1.05rem; color: var(--text-dim); font-style: italic;
 }
 
 .log-box {

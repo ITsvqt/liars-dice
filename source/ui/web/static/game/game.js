@@ -13,8 +13,8 @@ const CARD_LAYOUTS = {
 };
 
 // ── Arena geometry ─────────────────────────────────────
-// Larger arena: 480x480, radius 168
-const CX = 260, CY = 260, R = 182;
+// Arena: 572x572, radius 200
+const CX = 286, CY = 286, R = 200;
 const NS = 'http://www.w3.org/2000/svg';
 
 // ── Permanent seat order — set once on first render ────
@@ -22,6 +22,8 @@ let seatOrder = null;   // array of player names in seat positions
 
 // (inputs always visible — no toggle state needed)
 let revealShown = false;   // guard so overlay only fires once per reveal
+let _lastRound  = null;    // track round changes to reset bid inputs
+let gameOverDismissed = false;  // stop poll loop from re-showing game-over after restart/quit
 
 // ── Setup state ────────────────────────────────────────
 let setupData = null, aiCount = null;
@@ -95,6 +97,7 @@ startBtn.addEventListener('click', async () => {
         if (!response.ok) throw new Error();
         setupScreen.style.display = 'none';
         gameScreen.style.display  = 'flex';
+        gameOverDismissed = false;   // fresh game — allow game-over card to show again later
         poll();
     } catch {
         setupError.textContent = 'Could not start the game. Please try again.';
@@ -273,9 +276,16 @@ function buildPlayerPanel(players, currentPlayerName, bidHolderName, diceTotal, 
 
     document.getElementById('dice-total').textContent = total || '—';
 
-    // Wild ones flag
+    // Wild ones flag — always shown; ON (purple) or OFF (dim)
     const wildFlag = document.getElementById('wild-flag');
-    if (wildFlag) wildFlag.hidden = !wildOnesMode;
+    if (wildFlag) {
+        const badge = wildFlag.querySelector('.wild-flag-badge');
+        if (badge) {
+            badge.textContent = wildOnesMode ? 'ON' : 'OFF';
+            badge.classList.toggle('on', wildOnesMode);
+            badge.classList.toggle('off', !wildOnesMode);
+        }
+    }
 
 }
 
@@ -322,6 +332,35 @@ function buildHandCards(hand) {
         cardWrap.appendChild(card);
         wrap.appendChild(cardWrap);
     });
+}
+
+
+/* Current bid in the left panel — reuses the same die card as the hand */
+function buildPanelBid(bid) {
+    const qtyEl = document.getElementById('panel-bid-qty');
+    const dieEl = document.getElementById('panel-bid-die');
+    const xEl   = document.getElementById('panel-bid-x');
+    if (!dieEl) return;
+    if (!bid) {
+        qtyEl.textContent = '—';
+        dieEl.innerHTML = '';
+        if (xEl) xEl.hidden = true;   // hide the × when there's no bid
+        return;
+    }
+    qtyEl.textContent = bid.quantity;
+    if (xEl) xEl.hidden = false;      // show the ×
+    dieEl.innerHTML = '';
+    const card = document.createElement('div');
+    card.className = 'dice-card';
+    (CARD_LAYOUTS[bid.face_value] || []).forEach(p => {
+        const pip = document.createElement('span');
+        pip.className = 'pip-heart' + (p.center ? ' center' : '');
+        pip.textContent = '♥';
+        pip.style.gridColumn = p.col;
+        pip.style.gridRow = p.row;
+        card.appendChild(pip);
+    });
+    dieEl.appendChild(card);
 }
 
 
@@ -473,6 +512,7 @@ function showReveal(state) {
 
 document.getElementById('restart-btn').addEventListener('click', async () => {
     document.getElementById('game-over').hidden = true;
+    gameOverDismissed = true;   // suppress the poll loop from re-showing it during transition
     await fetch('/restart', { method: 'POST' });
     setupScreen.style.display = 'flex';
     gameScreen.style.display  = 'none';
@@ -482,6 +522,7 @@ document.getElementById('restart-btn').addEventListener('click', async () => {
 });
 
 document.getElementById('quit-btn').addEventListener('click', async () => {
+    gameOverDismissed = true;
     await fetch('/quit', { method: 'POST' });
     window.close();
 });
@@ -495,6 +536,15 @@ function render(state) {
 
     // Header
     document.getElementById('round-label').textContent = `Round ${state.round}`;
+
+    // Reset bid inputs once per new round (guard vs. every 300ms poll, which would fight typing)
+    if (state.round !== _lastRound) {
+        _lastRound    = state.round;
+        bidQtyEl.value  = 1;
+        bidFaceEl.value = 1;
+        bidQtyEl.min    = 1;
+        bidFaceEl.min   = 1;
+    }
     document.getElementById('turn-label').textContent  = state.current_player
         ? (state.players.find(p => p.name === state.current_player)?.is_bot === false
             ? 'Your turn'
@@ -513,6 +563,9 @@ function render(state) {
     }
     window._currentBid = state.current_bid;
     window._wildOnes   = state.wild_ones;
+
+    // Left-panel current bid
+    buildPanelBid(state.current_bid);
 
     // Arena seats
     buildSeats(state.players, state.current_player, state.bid_holder);
@@ -576,7 +629,7 @@ function render(state) {
 
 
     // Game over
-    if (state.phase === 'game_over' && state.winner && !state.show_reveal){
+    if (state.phase === 'game_over' && state.winner && !state.show_reveal && !gameOverDismissed){
         document.getElementById('game-over').hidden = false;
         document.getElementById('game-over-title').textContent =
             state.winner === state.players.find(p => !p.is_bot)?.name ? '🏆 You Win!' : 'Game Over';
