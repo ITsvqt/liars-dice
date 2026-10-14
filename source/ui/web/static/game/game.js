@@ -383,7 +383,10 @@ function enforceBidMin(currentBid) {
     }
 }
 
-bidFaceEl.addEventListener('input', () => enforceBidMin(window._currentBid));
+bidFaceEl.addEventListener('input', () => {
+    enforceBidMin(window._currentBid);
+    bidQtyEl.value = bidQtyEl.min;   // reset qty to the floor for this face (1 when you raise the face)
+});
 
 bidBtn.addEventListener('click', async () => {
     const face = parseInt(bidFaceEl.value);
