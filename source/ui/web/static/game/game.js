@@ -396,12 +396,6 @@ document.getElementById('reveal-continue').addEventListener('click', async () =>
 // ════════════════════════════════════════════════════════
 
 function showReveal(state) {
-    console.log('showReveal called', JSON.stringify(state.reveal));  //! remove this
-    console.log('current_bid', JSON.stringify(state.current_bid));  //! remove this
-    if (state.phase === 'reveal' && state.reveal && state.reveal.winner && !revealShown) {
-    console.log('reveal trigger hit', state.reveal.winner, revealShown);
-    revealShown = true;
-    }                                                               //! Remove this
     const { round, players, current_bid, reveal } = state;
 
     document.getElementById('reveal-title').textContent = `Round ${round} — The Reveal`;
@@ -579,17 +573,7 @@ function render(state) {
     }else{
         revealOverlay.classList.remove('show');
     }
-    // //!asd
-    // // Reveal overlay — show once per reveal, not on every poll tick
-    // if (state.phase === 'reveal' && state.reveal && state.reveal.winner && !revealShown) {
-    //     revealShown = true;
-    //     showReveal(state);
-    // }
-    // // Reset guard when phase leaves reveal
-    // if (state.phase !== 'reveal') {
-    //     revealShown = false;
-    // }
-    // //!asd
+
 
     // Game over
     if (state.phase === 'game_over' && state.winner && !state.show_reveal){
