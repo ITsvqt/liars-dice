@@ -26,16 +26,12 @@ class WebUI(GameUI):
         #* Restart
         self.restart_event = threading.Event()
         
-        #* Reload Data
-        self.reload_state_event = threading.Event()
-        self.reload_state_event.set()
+        #* Game thread is parked & ready to receive setup (raised in get_setup_vars)
+        self.setup_ready_event = threading.Event()
 
 
     def initiate(self):
         """Set starting  web_UI state"""
-        
-        #* Reset starting
-        self.reload_state_event.clear()
         
         #* Game state for web render
         self.state = {              # Hint  # SET BY
@@ -60,9 +56,10 @@ class WebUI(GameUI):
         self.move_data = None
         self.restart_data = None
         self.setup_event.clear()
-        
-        #* Reset finished
-        self.reload_state_event.set()
+        self.restart_event.clear()
+        self.move_event.clear()
+        self.reveal_event.clear()
+        self.setup_ready_event.clear()
         
         
         
@@ -75,7 +72,9 @@ class WebUI(GameUI):
             wild_ones: True | False
         """
         
+        self.setup_ready_event.set()
         self.setup_event.wait()
+        self.setup_ready_event.clear()
         self.state["is_running"] = True
         self.state["wild_ones"] = self.setup_data["wild_ones"]
         return self.setup_data
