@@ -8,6 +8,7 @@ import utility.constants as c
 from fastapi import Body, FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 
 
 import os
@@ -24,6 +25,17 @@ def set_ui(ui: WebUI):
     
 #* FastAPI
 app = FastAPI()
+
+#* Prevent browser from caching static files (avoids stale JS/CSS during dev)
+class NoCacheStaticMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        if request.url.path.startswith("/static"):
+            response.headers["Cache-Control"] = "no-store"
+        return response
+
+app.add_middleware(NoCacheStaticMiddleware)
+
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 # app.mount("/static", StaticFiles(directory="ui/web/static"), name = "static")
 
@@ -57,16 +69,11 @@ def send_constants():
 @app.post("/setup")
 def receive_game_setup(data: dict = Body()):
     
-    if not web_ui.reload_state_event.wait(timeout=10):
+    # Wait until the game thread is genuinely parked & ready for a new setup
+    if not web_ui.setup_ready_event.wait(timeout=10):
         return JSONResponse(
             status_code=503,
-            content= {"error": "Game reset timed out"}
-        )
-    
-    if web_ui.state["is_running"]:
-        return JSONResponse(
-            status_code = 400,
-            content = {"error": "Game already in progress"}
+            content= {"error": "Game not ready for setup"}
         )
     
     web_ui.setup_data = data
@@ -98,12 +105,19 @@ def reveal_continue():
 # *** END GAME ***
 @app.post("/restart")
 def restart():
+    # Only accept a restart when a game is genuinely finished & awaiting replay
+    if web_ui.state["phase"] != "game_over":
+        return JSONResponse(
+            status_code=409,
+            content={"error": "No finished game to restart"}
+        )
     web_ui.restart_data = True
     web_ui.restart_event.set()
     return {"success": True}
 
 @app.post("/quit")
 def quit():
+    # Tell the game thread to stop, then terminate the whole process.
     web_ui.restart_data = False
     web_ui.restart_event.set()
-    return {"success": True}
+    os._exit(0)
