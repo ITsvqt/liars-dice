@@ -524,12 +524,6 @@ document.getElementById('restart-btn').addEventListener('click', async () => {
     revealOverlay.classList.remove('show');
 });
 
-document.getElementById('quit-btn').addEventListener('click', async () => {
-    gameOverDismissed = true;
-    await fetch('/quit', { method: 'POST' });
-    window.close();
-});
-
 // ════════════════════════════════════════════════════════
 // RENDER
 // ════════════════════════════════════════════════════════

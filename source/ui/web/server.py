@@ -5,9 +5,9 @@ if TYPE_CHECKING:
     from ui.web.web_ui import WebUI
 
 import utility.constants as c
-from fastapi import Body, FastAPI
+from fastapi import Body, FastAPI, BackgroundTasks
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
 
@@ -115,9 +115,18 @@ def restart():
     web_ui.restart_event.set()
     return {"success": True}
 
-@app.post("/quit")
+@app.get("/quit")
 def quit():
-    # Tell the game thread to stop, then terminate the whole process.
+    # Stop the game thread, serve a themed blank page, then shut the process down
+    # (BackgroundTask runs only AFTER this response is sent to the browser).
+    def _shutdown():
+        os._exit(0)
     web_ui.restart_data = False
     web_ui.restart_event.set()
-    os._exit(0)
+    tasks = BackgroundTasks()
+    tasks.add_task(_shutdown)
+    return HTMLResponse(
+        "<!DOCTYPE html><meta charset='utf-8'>"
+        "<style>html,body{height:100%;margin:0;background:#0e0c0a}</style>",
+        background=tasks
+    )
