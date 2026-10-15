@@ -409,6 +409,16 @@ qtyDec.addEventListener('click', () => {
     const v = parseInt(bidQtyEl.value) || 1;
     if (v > floor) bidQtyEl.value = v - 1;
 });
+
+// Validate the quantity field; show "Invalid Bid" (red, under the controls) on failure
+function validateQtyInput() {
+    const raw   = bidQtyEl.value.trim();
+    const qty   = parseInt(raw, 10);
+    const floor = parseInt(bidQtyEl.min, 10) || 1;
+    const ok    = /^\d+$/.test(raw) && Number.isInteger(qty) && qty >= floor;
+    moveError.textContent = ok ? '' : 'Invalid Bid';
+    return ok;
+}
 qtyInc.addEventListener('click', () => {
     const v = parseInt(bidQtyEl.value) || 1;
     bidQtyEl.value = v + 1;
@@ -416,10 +426,10 @@ qtyInc.addEventListener('click', () => {
 
 bidBtn.addEventListener('click', async () => {
     const face = selectedFace;
-    const qty  = parseInt(bidQtyEl.value);
+    const qty  = parseInt(bidQtyEl.value, 10);
     moveError.textContent = '';
 
-    if (face < 1 || face > 6 || qty < 1) { moveError.textContent = 'Invalid values.'; return; }
+    if (face < 1 || face > 6 || !validateQtyInput()) return;
     const cb = window._currentBid;
     if (cb && !(face > cb.face_value || (face === cb.face_value && qty > cb.quantity))) {
         moveError.textContent = 'Bid must be higher than the current bid.';
@@ -567,6 +577,7 @@ function render(state) {
         bidQtyEl.min   = 1;
         selectedFace   = 1;
         renderFaceBoxes(null);
+        validateQtyInput();
     }
     document.getElementById('turn-label').textContent  = state.current_player
         ? (state.players.find(p => p.name === state.current_player)?.is_bot === false
