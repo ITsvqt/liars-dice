@@ -78,6 +78,7 @@
                         </div>
                     </div>
                     <div class="panel-divider" id="hand-divider"></div>
+                    <p class="hand-title" id="hand-title">Player Hand</p>
                     <div class="hand-cards" id="player-hand-cards"></div>
                 </aside>
 
@@ -100,13 +101,24 @@
                             <div class="controls-left">
                                 <button class="btn btn--bid" id="bid-btn">Bid</button>
                                 <div class="bid-inputs" id="bid-inputs">
-                                    <div class="input-group">
+                                    <div class="qty-group">
                                         <label for="bid-qty">Quantity</label>
-                                        <input type="number" id="bid-qty" min="1" value="1" />
+                                        <div class="qty-stepper">
+                                            <button type="button" class="qty-step" id="qty-dec">−</button>
+                                            <input type="number" id="bid-qty" min="1" value="1" />
+                                            <button type="button" class="qty-step" id="qty-inc">+</button>
+                                        </div>
                                     </div>
-                                    <div class="input-group">
-                                        <label for="bid-face">Face · 1–6</label>
-                                        <input type="number" id="bid-face" min="1" max="6" value="1" />
+                                    <div class="face-group">
+                                        <label>Face</label>
+                                        <div class="face-boxes" id="face-boxes">
+                                            <button type="button" class="face-box" data-face="1">1</button>
+                                            <button type="button" class="face-box" data-face="2">2</button>
+                                            <button type="button" class="face-box" data-face="3">3</button>
+                                            <button type="button" class="face-box" data-face="4">4</button>
+                                            <button type="button" class="face-box" data-face="5">5</button>
+                                            <button type="button" class="face-box" data-face="6">6</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

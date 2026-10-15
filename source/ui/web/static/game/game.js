@@ -42,8 +42,11 @@ const setupError   = document.getElementById('setup-error');
 const startBtn     = document.getElementById('start-btn');
 const challengeBtn  = document.getElementById('challenge-btn');
 const bidBtn        = document.getElementById('bid-btn');
-const bidFaceEl     = document.getElementById('bid-face');
 const bidQtyEl      = document.getElementById('bid-qty');
+const qtyDec        = document.getElementById('qty-dec');
+const qtyInc        = document.getElementById('qty-inc');
+const faceBoxes     = Array.from(document.querySelectorAll('.face-box'));
+let selectedFace    = 1;
 const moveError     = document.getElementById('move-error');
 const revealOverlay = document.getElementById('reveal-overlay');
 
@@ -301,14 +304,17 @@ function buildHandCards(hand) {
 
     const wrap = document.getElementById('player-hand-cards');
     const divider = document.getElementById('hand-divider');
+    const handTitle = document.getElementById('hand-title');
     if (!wrap) return;
 
     wrap.innerHTML = '';
     if (!hand || !hand.length) {
         divider.style.display = 'none';
+        if (handTitle) handTitle.style.display = 'none';
         return;
     }
     divider.style.display = '';
+    if (handTitle) handTitle.style.display = '';
 
     hand.forEach(v => {
         const cardWrap = document.createElement('div');
@@ -368,28 +374,48 @@ function buildPanelBid(bid) {
 // CONTROLS
 // ════════════════════════════════════════════════════════
 
+function renderFaceBoxes(currentBid) {
+    const minFace = currentBid ? currentBid.face_value : 1;
+    if (selectedFace < minFace) selectedFace = minFace;
+    faceBoxes.forEach(box => {
+        const f = parseInt(box.dataset.face);
+        box.disabled = f < minFace;
+        box.classList.toggle('selected', f === selectedFace);
+    });
+}
+
 function enforceBidMin(currentBid) {
-    if (!currentBid) { bidFaceEl.min = 1; bidQtyEl.min = 1; return; }
-    const f = parseInt(bidFaceEl.value) || 1;
-    if (f === currentBid.face_value) {
+    renderFaceBoxes(currentBid);
+    if (!currentBid) { bidQtyEl.min = 1; return; }
+    if (selectedFace === currentBid.face_value) {
         bidQtyEl.min = currentBid.quantity + 1;
         if (parseInt(bidQtyEl.value) <= currentBid.quantity) bidQtyEl.value = currentBid.quantity + 1;
-    } else if (f > currentBid.face_value) {
-        bidQtyEl.min = 1;
     } else {
-        bidFaceEl.value = currentBid.face_value;
-        bidQtyEl.min    = currentBid.quantity + 1;
-        if (parseInt(bidQtyEl.value) <= currentBid.quantity) bidQtyEl.value = currentBid.quantity + 1;
+        bidQtyEl.min = 1;
     }
 }
 
-bidFaceEl.addEventListener('input', () => {
-    enforceBidMin(window._currentBid);
-    bidQtyEl.value = bidQtyEl.min;   // reset qty to the floor for this face (1 when you raise the face)
+faceBoxes.forEach(box => {
+    box.addEventListener('click', () => {
+        selectedFace = parseInt(box.dataset.face);
+        renderFaceBoxes(window._currentBid);
+        enforceBidMin(window._currentBid);
+        bidQtyEl.value = bidQtyEl.min;   // reset qty to the floor for the chosen face
+    });
+});
+
+qtyDec.addEventListener('click', () => {
+    const floor = parseInt(bidQtyEl.min) || 1;
+    const v = parseInt(bidQtyEl.value) || 1;
+    if (v > floor) bidQtyEl.value = v - 1;
+});
+qtyInc.addEventListener('click', () => {
+    const v = parseInt(bidQtyEl.value) || 1;
+    bidQtyEl.value = v + 1;
 });
 
 bidBtn.addEventListener('click', async () => {
-    const face = parseInt(bidFaceEl.value);
+    const face = selectedFace;
     const qty  = parseInt(bidQtyEl.value);
     moveError.textContent = '';
 
@@ -537,10 +563,10 @@ function render(state) {
     // Reset bid inputs once per new round (guard vs. every 300ms poll, which would fight typing)
     if (state.round !== _lastRound) {
         _lastRound    = state.round;
-        bidQtyEl.value  = 1;
-        bidFaceEl.value = 1;
-        bidQtyEl.min    = 1;
-        bidFaceEl.min   = 1;
+        bidQtyEl.value = 1;
+        bidQtyEl.min   = 1;
+        selectedFace   = 1;
+        renderFaceBoxes(null);
     }
     document.getElementById('turn-label').textContent  = state.current_player
         ? (state.players.find(p => p.name === state.current_player)?.is_bot === false

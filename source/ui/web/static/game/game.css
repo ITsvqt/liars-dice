@@ -165,6 +165,12 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .wild-flag-badge.off { color: var(--text-dim); border-color: var(--text-dim); }
 
 /* Dice face as cards */
+.hand-title {
+    font-family: 'Palatino Linotype', Palatino, serif;
+    font-size: 0.8rem; color: var(--text-dim);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    text-align: center; margin: 0 0 0.15rem;
+}
 .hand-cards {
     display: flex; flex-wrap: wrap; gap: 5px;
     justify-content: center; padding-top: 0.25rem;
@@ -269,7 +275,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .controls { width: 572px; display: flex; flex-direction: column; gap: 0.4rem; }
 
 .controls-inner {
-    display: flex; align-items: stretch; gap: 0.7rem;
+    display: flex; align-items: stretch; gap: 1.6rem;
 }
 
 /* Left side: Bid button + two inputs stacked below it */
@@ -278,11 +284,47 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 }
 
 .bid-inputs {
-    display: flex; gap: 0.5rem;
+    display: flex; gap: 1.5rem; align-items: flex-start; justify-content: center; width: 100%;
 }
-.input-group { display: flex; flex-direction: column; gap: 0.25rem; flex: 1; }
-.input-group label { font-size: 0.78rem; color: var(--text-dim); }
-.input-group input { padding: 0.42rem 0.6rem; font-size: 0.95rem; width: 100%; }
+.qty-group, .face-group { display: flex; flex-direction: column; gap: 0.3rem; align-items: center; }
+.qty-group label, .face-group label { font-size: 0.78rem; color: var(--text-dim); letter-spacing: 0.03em; text-align: center; }
+
+/* Quantity stepper — like setup, but the middle is a typable square box */
+.qty-stepper { display: flex; align-items: center; gap: 0.4rem; }
+.qty-step {
+    background: var(--surface); border: 1px solid var(--gold-dim);
+    border-radius: var(--radius); color: var(--gold);
+    font-size: 1.4rem; width: 2.2rem; height: 2.2rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s, background 0.15s; flex-shrink: 0;
+}
+.qty-step:hover { border-color: var(--gold); background: var(--bg); }
+#bid-qty {
+    width: 3rem; height: 2.2rem; text-align: center;
+    background: var(--bg); border: 1px solid var(--gold-dim);
+    border-radius: var(--radius); color: var(--gold);
+    font-family: 'Palatino Linotype', Palatino, serif; font-size: 1.2rem;
+    padding: 0; outline: none; -moz-appearance: textfield;
+}
+#bid-qty::-webkit-outer-spin-button,
+#bid-qty::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+#bid-qty:focus { border-color: var(--gold); }
+
+/* Face boxes — a row of 6 square number buttons */
+.face-boxes { display: flex; gap: 0.35rem; }
+.face-box {
+    width: 2.2rem; height: 2.2rem;
+    background: var(--bg); border: 1px solid var(--gold-dim);
+    border-radius: var(--radius); color: var(--text);
+    font-family: 'Palatino Linotype', Palatino, serif; font-size: 1.05rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s, background 0.15s, color 0.15s, opacity 0.15s;
+}
+.face-box:hover:not(:disabled) { border-color: var(--gold); }
+.face-box.selected {
+    background: var(--gold); color: var(--bg); border-color: var(--gold); font-weight: 700;
+}
+.face-box:disabled { opacity: 0.3; cursor: not-allowed; }
 
 /* Bid button — same width as the two inputs together */
 .btn--bid {
