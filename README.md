@@ -1,4 +1,4 @@
-# 🎲 Liar's Dice in Python
+# Liar's Dice in Python
 
 > *"All dice on the table. Nobody knows the truth. Everyone's bluffing."*
 
@@ -8,7 +8,7 @@ Built as a submission for a programming challenge. The goal: not just to impleme
 
 ---
 
-## 🏴‍☠️ What Is Liar's Dice?
+## What Is Liar's Dice?
 
 Liar's Dice is a hidden-information bluffing game. Every player secretly rolls five dice, then players take turns making bold claims about the total dice on the table — knowing full well they might be lying. When someone calls "Liar!", the dice are revealed. Whoever was wrong loses a die. Last one standing wins.
 
