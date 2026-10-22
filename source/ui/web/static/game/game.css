@@ -17,20 +17,20 @@
 .field--row { flex-direction: row; align-items: center; justify-content: space-between; }
 
 label {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 1rem; color: var(--text-dim); letter-spacing: 0.04em;
 }
 input[type="text"], input[type="number"] {
     background: var(--bg); border: 1px solid var(--gold-dim);
     border-radius: var(--radius); color: var(--text);
-    font-family: 'Palatino Linotype', Palatino, serif; font-size: 1.05rem;
+    font-family: Verdana, Geneva, sans-serif; font-size: 1.05rem;
     padding: 0.6rem 0.75rem; width: 100%; outline: none;
     transition: border-color 0.15s;
 }
 input[type="text"]:focus, input[type="number"]:focus { border-color: var(--gold); }
 input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--gold); cursor: pointer; }
 .taken-names {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 0.88rem; color: var(--text-dim); font-style: italic; line-height: 1.5;
 }
 .stepper { display: flex; align-items: center; gap: 1.25rem; }
@@ -44,7 +44,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .stepper-btn:hover { border-color: var(--gold); background: var(--bg); }
 .stepper-btn:disabled { opacity: 0.3; }
 #ai-count {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 1.6rem; color: var(--gold); min-width: 1.5rem; text-align: center;
 }
 
@@ -67,7 +67,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .game-top-right { width: 360px; flex-shrink: 0; display: flex; justify-content: center; }
 
 .game-top-left h2 {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 1.2rem; color: var(--gold);
 }
 
@@ -104,7 +104,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .panel-player.eliminated { opacity: 0.25; filter: grayscale(100%); }
 
 .panel-player-name {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 1rem; color: var(--text-dim);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;
 }
@@ -112,7 +112,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .panel-player.eliminated .panel-player-name { color: var(--text-dim); opacity: 0.5; }
 
 .panel-dice-count {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 1.05rem; color: var(--text); flex-shrink: 0;
 }
 .panel-player.current .panel-dice-count { color: var(--gold); }
@@ -124,24 +124,24 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .panel-divider--v { border-top: none; border-left: 1px solid var(--gold-dim); margin: 0; align-self: stretch; }
 .current-bid-panel { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
 .current-bid-label {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 0.75rem; color: var(--text-dim); letter-spacing: 0.07em; text-transform: uppercase;
 }
 .current-bid-value { display: flex; align-items: center; gap: 0.4rem; }
 #panel-bid-qty {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 1.9rem; color: var(--gold); font-weight: 700; line-height: 1;
 }
-.bid-x { font-family: 'Palatino Linotype', Palatino, serif; font-size: 1.1rem; color: var(--text-dim); }
+.bid-x { font-family: Verdana, Geneva, sans-serif; font-size: 1.1rem; color: var(--text-dim); }
 .panel-bid-die { display: inline-flex; }
 
 .dice-total { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.15rem; }
 .dice-total-label {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 0.75rem; color: var(--text-dim); letter-spacing: 0.07em; text-transform: uppercase;
 }
 .dice-total-count {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 2.6rem; color: var(--gold); font-weight: 700; line-height: 1;
 }
 
@@ -152,11 +152,11 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 }
 .wild-flag[hidden] { display: none; }
 .wild-flag-label {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 0.88rem; color: var(--text-dim);
 }
 .wild-flag-badge {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 0.72rem;
     border: 1px solid; border-radius: 3px;
     padding: 1px 6px; letter-spacing: 0.06em;
@@ -166,7 +166,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 
 /* Dice face as cards */
 .hand-title {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 0.8rem; color: var(--text-dim);
     letter-spacing: 0.1em; text-transform: uppercase;
     text-align: center; margin: 0 0 0.15rem;
@@ -179,7 +179,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
     display: flex; flex-direction: column; align-items: center; gap: 3px;
 }
 .card-num {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 11px; color: var(--gold); font-weight: 700; line-height: 1;
 }
 .dice-card {
@@ -249,7 +249,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .avatar {
     width: 58px; height: 58px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 15px; font-weight: 600; color: #fff;
     border: 2px solid transparent; transition: border-color 0.4s, box-shadow 0.4s;
 }
@@ -259,7 +259,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .seat.bot   .avatar { background: #2e4a2e; }
 
 .seat-name {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 13px; color: var(--text-dim);
     text-align: center; white-space: nowrap;
     max-width: 90px; overflow: hidden; text-overflow: ellipsis; transition: color 0.4s;
@@ -281,10 +281,10 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
     text-align: center; pointer-events: none;
 }
 .bid-value {
-    font-family: 'Palatino Linotype', Palatino, serif; font-size: 1.6rem; color: var(--gold);
+    font-family: Verdana, Geneva, sans-serif; font-size: 1.6rem; color: var(--gold);
 }
 .bid-sub {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 0.68rem; color: var(--text-dim);
     margin-top: 0.3rem; letter-spacing: 0.08em; text-transform: uppercase;
 }
@@ -305,7 +305,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
     display: flex; gap: 1.5rem; align-items: flex-start; justify-content: center; width: 100%;
 }
 .qty-group, .face-group { display: flex; flex-direction: column; gap: 0.3rem; align-items: center; }
-.qty-group label, .face-group label { font-size: 0.78rem; color: var(--text-dim); letter-spacing: 0.03em; text-align: center; }
+.qty-group label, .face-group label { font-family: Verdana, Geneva, sans-serif; font-size: 0.78rem; color: var(--text-dim); letter-spacing: 0.03em; text-align: center; }
 
 /* Quantity stepper — like setup, but the middle is a typable square box */
 .qty-stepper { display: flex; align-items: center; gap: 0.4rem; }
@@ -321,7 +321,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
     width: 3rem; height: 2.2rem; text-align: center;
     background: var(--bg); border: 1px solid var(--gold-dim);
     border-radius: var(--radius); color: var(--gold);
-    font-family: 'Palatino Linotype', Palatino, serif; font-size: 1.2rem;
+    font-family: Verdana, Geneva, sans-serif; font-size: 1.2rem;
     padding: 0; outline: none; -moz-appearance: textfield;
 }
 #bid-qty::-webkit-outer-spin-button,
@@ -334,7 +334,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
     width: 2.2rem; height: 2.2rem;
     background: var(--bg); border: 1px solid var(--gold-dim);
     border-radius: var(--radius); color: var(--text);
-    font-family: 'Palatino Linotype', Palatino, serif; font-size: 1.05rem;
+    font-family: Verdana, Geneva, sans-serif; font-size: 1.05rem;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
     transition: border-color 0.15s, background 0.15s, color 0.15s, opacity 0.15s;
 }
@@ -347,7 +347,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 /* Bid button — same width as the two inputs together */
 .btn--bid {
     background: var(--gold); color: var(--bg); border: none;
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 0.9rem; letter-spacing: 0.1em; padding: 0.5rem 1rem;
     border-radius: var(--radius); cursor: pointer;
     transition: background 0.15s; width: 100%;
@@ -359,7 +359,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
     background: transparent;
     color: #c0392b;
     border: 2px solid #8b2020;
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 0.9rem; letter-spacing: 0.1em;
     border-radius: var(--radius); cursor: pointer;
     padding: 0.5rem 1.4rem;
@@ -441,7 +441,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .reveal-overlay.show .reveal-card { transform: translateY(0); }
 
 .reveal-title {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 1.1rem; color: var(--gold); text-align: center; letter-spacing: 0.05em;
 }
 
@@ -457,11 +457,11 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .hand-avatar {
     width: 30px; height: 30px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 11px; font-weight: 500; color: #fff; flex-shrink: 0;
 }
 .hand-name {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 15px; color: var(--text-dim);
     flex: 1; min-width: 120px;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -483,7 +483,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .face-cell.wild-face .face-die { color: #7b4fa6; }
 .face-count { font-size: 15px; font-weight: 600; color: var(--text); }
 .face-label {
-    font-family: 'Palatino Linotype', Palatino, serif;
+    font-family: Verdana, Geneva, sans-serif;
     font-size: 9px; color: var(--text-dim); letter-spacing: 0.05em; text-transform: uppercase; min-height: 10px;
 }
 
@@ -496,13 +496,13 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .result-banner.bidder-wins     { background: rgba(201,168,76,0.08); border: 1px solid var(--gold-dim); }
 
 .result-verdict {
-    font-family: 'Palatino Linotype', Palatino, serif; font-size: 1.1rem; font-weight: 700;
+    font-family: Verdana, Geneva, sans-serif; font-size: 1.1rem; font-weight: 700;
 }
 .challenger-wins .result-verdict { color: #e05050; }
 .bidder-wins     .result-verdict { color: var(--text); }
-.result-detail { font-family: 'Palatino Linotype', Palatino, serif; font-size: 0.9rem; color: var(--text-dim); }
+.result-detail { font-family: Verdana, Geneva, sans-serif; font-size: 0.9rem; color: var(--text-dim); }
 
-.loser-line { font-family: 'Palatino Linotype', Palatino, serif; text-align: center; font-size: 0.9rem; color: var(--text-dim); }
+.loser-line { font-family: Verdana, Geneva, sans-serif; text-align: center; font-size: 0.9rem; color: var(--text-dim); }
 .loser-line strong { color: var(--text); }
 .elim-tag {
     display: inline-block; margin-left: 6px; font-size: 0.75rem; color: var(--red);
@@ -526,5 +526,5 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
     text-align: center; display: flex; flex-direction: column; gap: 1.25rem;
     max-width: 360px; width: 100%;
 }
-.game-over-card p { font-family: 'Palatino Linotype', Palatino, serif; color: var(--text-dim); font-size: 1rem; }
+.game-over-card p { font-family: Verdana, Geneva, sans-serif; color: var(--text-dim); font-size: 1rem; }
 
