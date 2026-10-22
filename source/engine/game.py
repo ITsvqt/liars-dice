@@ -20,8 +20,6 @@ if TYPE_CHECKING:
 
 class Game:
     
-    
-    
     def __init__(self, ui: GameUI):
         
         self.ui = ui
@@ -48,8 +46,8 @@ class Game:
         self.wild_ones = config["wild_ones"]
         
 
-    def start(self):
-
+    def start(self):    
+            
         while True:
             self.cnt_round: int = 0
             self.ui.initiate()

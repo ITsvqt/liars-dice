@@ -36,6 +36,7 @@ class TerminalUI(GameUI):
     
     
     def __init__(self):
+        super().__init__()
         self.console = Console()
     
     
@@ -73,11 +74,13 @@ class TerminalUI(GameUI):
             False
         )
         
+        self.wild_ones = setup["wild_ones"]
+        
 
         return setup
         
         
-    def show_prestart(self, players: list[Player], wild_ones: bool):
+    def show_prestart(self, players: list[Player]):
         self.console.print()
         self.console.print(f"  [dim]Players at the table:[/dim]")
         for p in players:
@@ -85,7 +88,7 @@ class TerminalUI(GameUI):
             self.console.print(f"    • {tag} [bold]{p.name}[/bold]")
 
         self.console.print()
-        if wild_ones:
+        if self.wild_ones:
             self.console.print("  [magenta bold]★ Wild Ones Mode is ON ★[/magenta bold]")
 
         self.console.print()
@@ -97,8 +100,7 @@ class TerminalUI(GameUI):
         self,
         round_num: int,
         active_players: list[Player],
-        dice_cnt: int,
-        wild_ones: bool
+        dice_cnt: int
         ):
         
         self.console.print()
@@ -116,7 +118,7 @@ class TerminalUI(GameUI):
 
         self.console.print(table)
 
-        if wild_ones:
+        if self.wild_ones:
             self.console.print("  [magenta bold]★ Wild Ones Mode Active ★[/magenta bold]  "
                         "[dim]1s count as any face[/dim]\n")
             
@@ -147,8 +149,7 @@ class TerminalUI(GameUI):
         self,
         active_players: list[Player],
         dice_face_count: Counter,
-        current_bid: Bid,
-        wild_ones: bool
+        current_bid: Bid
         ):
         self.console.print()
         self.console.rule("[bold red]🎲  REVEAL  🎲[/bold red]", style="red")
@@ -170,8 +171,8 @@ class TerminalUI(GameUI):
         
         for face in range(1, 7):
             count = dice_face_count[face]
-            wild_count = count + (dice_face_count[1]) if wild_ones and face != 1 else 0
-            wild_str = str(wild_count) if wild_ones and face != 1 else "-"
+            wild_count = count + (dice_face_count[1]) if self.wild_ones and face != 1 else 0
+            wild_str = str(wild_count) if self.wild_ones and face != 1 else "-"
             tally_table.add_row(f"{self.FACE_SYMBOLS[face]} {face}", str(count), wild_str)
                 
         self.console.print(tally_table)
@@ -236,8 +237,7 @@ class TerminalUI(GameUI):
         self,
         current_bid: Bid,
         player: Player,
-        dice_cnt: int,
-        wild_ones: bool = False
+        dice_cnt: int
         ):
         
         player_dice = player.values
@@ -254,7 +254,7 @@ class TerminalUI(GameUI):
         self.console.print(f"  [dim]Total dice on table: {dice_cnt}[/dim]")
         
         #* Show wild_ones mode
-        if wild_ones:
+        if self.wild_ones:
             self.console.print(f"  [dim magenta]Wild Ones active — 1s count as any face[/dim magenta]")
         
         self.console.print()

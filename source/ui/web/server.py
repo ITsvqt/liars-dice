@@ -54,7 +54,7 @@ def game():
 
 # *** RECEIVE GAME CONSTANTS ***
 @app.get("/setup")
-def send_constants():
+def get_constants():
     return {
         "suggested_name": c.SUGGESTED_PLAYER_NAME,
         "ai_names" : list(c.RESERVED_NAMES),
@@ -67,7 +67,7 @@ def send_constants():
     
 # *** SEND GAME SETTINGS ***
 @app.post("/setup")
-def receive_game_setup(data: dict = Body()):
+def send_game_setup(data: dict = Body()):
     
     # Wait until the game thread is genuinely parked & ready for a new setup
     if not web_ui.setup_ready_event.wait(timeout=10):
@@ -106,7 +106,7 @@ def reveal_continue():
 @app.post("/restart")
 def restart():
     # Only accept a restart when a game is genuinely finished & awaiting replay
-    if web_ui.state["phase"] != "game_over":
+    if web_ui.phase != "game_over":
         return JSONResponse(
             status_code=409,
             content={"error": "No finished game to restart"}

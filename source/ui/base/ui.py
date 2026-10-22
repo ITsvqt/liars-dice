@@ -11,18 +11,21 @@ from abc import ABC, abstractmethod
 
 class GameUI(ABC):
     
+    def __init__(self):
+        self.wild_ones: bool = None
+    
     @abstractmethod
     def initiate(self):
         """Start UI"""
         ...
         
     @abstractmethod
-    def show_prestart(self, players: list[Player], wild_ones: bool):
+    def show_prestart(self, players: list[Player]):
         """Show initial game state"""
         ...  
     
     @abstractmethod
-    def show_round(self, round_num: int, active_players: list[Player], dict_cnt: int, wild_ones: bool):
+    def show_round(self, round_num: int, active_players: list[Player], dict_cnt: int):
         """Update UI to round start state"""
         ...
         
@@ -40,8 +43,7 @@ class GameUI(ABC):
         self,
         active_players: list[Player],
         face_counts: Counter,
-        current_bid: Bid,
-        wild_ones: bool
+        current_bid: Bid
         ):
         """Update UI to round end state"""
         ...
@@ -87,8 +89,7 @@ class GameUI(ABC):
         self,
         current_bid: Bid,
         player: Player,
-        dice_cnt: int,
-        wild_ones: bool = False
+        dice_cnt: int
         )-> tuple[str, tuple[int, int] | None]:
         """UI should limit player for making Challenge move when there is no initial Bid\n
         Should display current Bid and Dice_cnt\n

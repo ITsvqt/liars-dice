@@ -14,6 +14,8 @@ from ui.base.ui import GameUI
 class WebUI(GameUI):
 
     def __init__(self):
+        super().__init__()
+        
         #* Setup
         self.setup_event = threading.Event()
 
@@ -28,31 +30,55 @@ class WebUI(GameUI):
         
         #* Game thread is parked & ready to receive setup (raised in get_setup_vars)
         self.setup_ready_event = threading.Event()
+        
+        self._set_starting_web_state()
 
+        
+    def _set_starting_web_state(self):
+        """Reset UI state attributes to their starting values for a new game."""
+        self.is_running: bool = False
+        self.phase: str = "waiting"
+        self.round: int = None
+        self.players: list[dict] = []
+        self.current_player: str = None
+        self.bid_holder: str = None
+        self.current_bid = None
+        self.dice_count: int = None
+        self.reveal: dict = None
+        self.log: list[str] = []
+        self.winner: str = None
+        self.wild_ones = False
+        self.player_hand: list[int] = []
+        self.is_reveal_shown: bool = False
+        self.error: str = ""
+
+    @property
+    def state(self) -> dict:
+        """Fronted consumed"""
+        return {
+            "is_running": self.is_running,
+            "phase": self.phase,
+            "round": self.round,
+            "players": self.players,
+            "current_player": self.current_player,
+            "bid_holder": self.bid_holder,
+            "current_bid": self.current_bid,
+            "dice_count": self.dice_count,
+            "reveal": self.reveal,
+            "log": self.log,
+            "winner": self.winner,
+            "wild_ones": self.wild_ones,
+            "player_hand": self.player_hand,
+            "show_reveal": self.is_reveal_shown,
+            "error": self.error,
+        }
 
     def initiate(self):
         """Set starting  web_UI state"""
         
-        #* Game state for web render
-        self.state = {              # Hint  # SET BY
-            "is_running": False,    # bool  # get_setup_vars
-            "phase": "waiting",     # str   # show,round, reveal, winner ("playing" / "reveal" / "game_over")
-            "round": None,          # int   # show round : int
-            "players": [],          # player.to_dict()  # show round
-            "current_player": None, # str(name)  # show_turn_header {}
-            "bid_holder": None,     # str(name)  # show turn
-            "current_bid": None,    # bid.to_dict()  # show turn
-            "dice_count": None,     # int  # show turn
-            "reveal": None,         # dict  # show_reveal, round_results
-            "log": [],              # list # any method 
-            "winner": None,         # str(name)  # show winner
-            "wild_ones": False,     # bool # get_setup_vars
-            "player_hand": [],       # human_player hand
-            "show_reveal": False
-        }
-        
+        self._set_starting_web_state()
 
-        self.setup_data: dict | None = None 
+        self.setup_data: dict | None = None  # game start options
         self.move_data = None
         self.restart_data = None
         self.setup_event.clear()
@@ -72,11 +98,14 @@ class WebUI(GameUI):
             wild_ones: True | False
         """
         
+        
         self.setup_ready_event.set()
+        # wait until player sends request with game settings, saved to self.setup_data
         self.setup_event.wait()
         self.setup_ready_event.clear()
-        self.state["is_running"] = True
-        self.state["wild_ones"] = self.setup_data["wild_ones"]
+        
+        self.is_running = True
+        self.wild_ones = self.setup_data["wild_ones"]
         return self.setup_data
     
     def ask_player_move(self,
@@ -89,12 +118,11 @@ class WebUI(GameUI):
         Should display current Bid and Dice_cnt\n
         Returns ("Challenge", None) | ("Bid", (face, quantity))"""
 
-        if not self.state["player_hand"]:
-            self.state["player_hand"] = player.values
+        if not self.player_hand:
+            self.player_hand = player.values
         
         self.move_event.clear()
         self.move_data = None
-        
         self.move_event.wait()
         
         data = self.move_data
@@ -107,36 +135,36 @@ class WebUI(GameUI):
 
     def show_prestart(self, players: list[Player], wild_ones: bool):
         """Show initial game state"""
-        self.state["players"] = [p.to_dict() for p in players]
+        self.players = [p.to_dict() for p in players]
     
     
     def show_round(self, round_num: int, active_players: list[Player], dice_cnt:int, wild_ones: bool):
         """Update UI to round start state"""
         
         #* Reset from previous round
-        self.state["current_bid"] = None
-        self.state["bid_holder"] = None
-        self.state["reveal"] = None
-        self.state["show_reveal"] = False
+        self.current_bid = None
+        self.bid_holder = None
+        self.reveal = None
+        self.is_reveal_shown = False
         
         #* Set round data
-        self.state["phase"] = "playing"
-        self.state["round"] = round_num
-        self.state["players"] = [p.to_dict() for p in active_players]
+        self.phase = "playing"
+        self.round = round_num
+        self.players = [p.to_dict() for p in active_players]
         
     def show_turn_header(self, current_player: Player):
-        self.state["current_player"] = current_player.name
+        self.current_player = current_player.name
         
     
     def show_turn(self,  player: Player, bid: Bid | None):
         """Update UI to turn state"""
         
         if bid is not None:
-            self.state["bid_holder"] = player.name
-            self.state["current_bid"] = bid.to_dict()
-            self.state["log"].append(f"{player.name} bids {bid}")
+            self.bid_holder = player.name
+            self.current_bid = bid.to_dict()
+            self.log.append(f"{player.name} bids {bid}")
         else:
-            self.state["log"].append(f"{player.name} calls LIAR!")
+            self.log.append(f"{player.name} calls LIAR!")
             
         
     def show_reveal(
@@ -149,8 +177,8 @@ class WebUI(GameUI):
         """Update UI to round end state"""
         
         self.reveal_event.clear()
-        self.state["phase"] = "reveal"
-        self.state["reveal"] = {
+        self.phase = "reveal"
+        self.reveal = {
             "player_hands": [p.to_dict(True) for p in active_players],
             "face_counts": {
                 "1": face_counts[1],
@@ -180,33 +208,33 @@ class WebUI(GameUI):
         ):
         """Update UI to round result state"""
         
-        self.state["reveal"]["winner"] = winning_player.name
-        self.state["reveal"]["loser"] = loser_player.name
-        self.state["reveal"]["loser_eliminated"] = is_eliminated
-        self.state["reveal"]["challenge_valid"] = is_challenge_valid
+        self.reveal["winner"] = winning_player.name
+        self.reveal["loser"] = loser_player.name
+        self.reveal["loser_eliminated"] = is_eliminated
+        self.reveal["challenge_valid"] = is_challenge_valid
         
         if is_challenge_valid:
-            self.state["log"].append(f"Bluff called! {loser_player.name} loses a die.")
+            self.log.append(f"Bluff called! {loser_player.name} loses a die.")
         else:
-            self.state["log"].append(f"Bid stands! {loser_player.name} loses a die.")
+            self.log.append(f"Bid stands! {loser_player.name} loses a die.")
 
         if is_eliminated:
-            self.state["log"].append(f"{loser_player.name} is eliminated!")
+            self.log.append(f"{loser_player.name} is eliminated!")
             
-        self.state["player_hand"] = []
-        self.state["show_reveal"] = True
+        self.player_hand = []
+        self.is_reveal_shown = True
             
         self.reveal_event.wait()
-        self.state["show_reveal"] = False
+        self.is_reveal_shown = False
         self.reveal_event.clear()
         
         
     def show_winner(self, player: Player) -> bool:
         """Update UI to game end state"""
-        self.state["show_reveal"] = False
-        self.state["phase"] = "game_over"
-        self.state["winner"] = player.name
-        self.state["log"].append(f"🏆 {player.name} wins the game!")
+        self.is_reveal_shown = False
+        self.phase = "game_over"
+        self.winner = player.name
+        self.log.append(f"🏆 {player.name} wins the game!")
         
 
         
@@ -218,11 +246,11 @@ class WebUI(GameUI):
         return self.restart_data
     
     def show_message(self, msg: str):
-        self.state["log"].append(msg)
+        self.log.append(msg)
         
     def show_error(self, error_msg: str):
-        self.state["error"] = error_msg
-        self.state["log"].append(f"Error: {error_msg}")
+        self.error = error_msg
+        self.log.append(f"Error: {error_msg}")
         
     def ask_confirmation(self, msg: str):
         pass  # no blocking confirmation in web UI
