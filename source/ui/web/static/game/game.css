@@ -198,6 +198,24 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 }
 .pip-heart.center { grid-column: 1 / -1; }
 
+/* Mini dice card for reveal overlay — smaller version of the bid dice cards */
+.dice-card-mini {
+    width: 26px; height: 26px;
+    background: var(--bg);
+    border: 1px solid var(--gold-dim);
+    border-radius: 3px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    padding: 2px; gap: 1px;
+}
+.pip-mini {
+    color: var(--gold); font-size: 6px;
+    display: flex; align-items: center; justify-content: center; line-height: 1;
+}
+.pip-mini.center { grid-column: 1 / -1; }
+.dice-card-mini.bid-match { border-color: var(--gold); box-shadow: 0 0 4px rgba(201,168,76,0.4); }
+
 
 /* ════════════════════════════════════════════════════════
    CENTER — BOARD + CONTROLS
@@ -415,7 +433,7 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .reveal-card {
     background: var(--surface); border: 1px solid var(--gold-dim);
     border-radius: 10px; padding: 1.6rem 1.9rem;
-    width: 400px; max-width: 94vw;
+    width: 560px; max-width: 95vw;
     display: flex; flex-direction: column; gap: 1.15rem;
     transform: translateY(14px); transition: transform 0.35s;
     max-height: 90vh; overflow-y: auto;
@@ -445,12 +463,10 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--go
 .hand-name {
     font-family: 'Palatino Linotype', Palatino, serif;
     font-size: 15px; color: var(--text-dim);
-    width: 85px; flex-shrink: 0;
+    flex: 1; min-width: 120px;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.hand-dice { display: flex; gap: 3px; flex-wrap: wrap; flex: 1; }
-.die-face { font-size: 18px; line-height: 1; }
-.die-face.bid-match { color: var(--gold); }
+.hand-dice { display: flex; gap: 3px; flex-wrap: wrap; flex-shrink: 0; }
 
 .reveal-divider { border: none; border-top: 1px solid #2a2218; }
 

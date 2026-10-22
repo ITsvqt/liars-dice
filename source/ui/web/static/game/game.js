@@ -1,5 +1,4 @@
 // ── Constants ──────────────────────────────────────────
-const DICE_SYMBOLS = ['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 const FACE_NAMES   = { 1:'Ones', 2:'Twos', 3:'Threes', 4:'Fours', 5:'Fives', 6:'Sixes' };
 const minName = 3, maxName = 15;
 
@@ -488,12 +487,15 @@ function showReveal(state) {
         row.className = 'hand-row' + (isLoser ? ' loser' : isWinner ? ' winner' : '');
         const bg       = ph.is_bot ? '#2e4a2e' : '#3b5998';
         const initials = ph.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-        const faces    = ph.hand.map(v =>
-            `<span class="die-face${v === current_bid.face_value ? ' bid-match' : ''}">${DICE_SYMBOLS[v]}</span>`
-        ).join('');
+        const faces    = ph.hand.map(v => {
+            const pips = (CARD_LAYOUTS[v] || []).map(p =>
+                `<span class="pip-mini${p.center ? ' center' : ''}" style="grid-column:${p.col};grid-row:${p.row}">♥</span>`
+            ).join('');
+            return `<div class="dice-card-mini${v === current_bid.face_value ? ' bid-match' : ''}">${pips}</div>`;
+        }).join('');
         row.innerHTML = `<div class="hand-avatar" style="background:${bg}">${initials}</div>
-                         <div class="hand-name">${ph.name}</div>
-                         <div class="hand-dice">${faces}</div>`;
+                         <div class="hand-name">${ph.name}</div>`;
+        row.insertAdjacentHTML('beforeend', `<div class="hand-dice">${faces}</div>`);
         handsEl.appendChild(row);
     });
 
@@ -509,7 +511,10 @@ function showReveal(state) {
         cell.className = 'face-cell'
             + (isBidFace ? ' bid-face' : '')
             + (isWild ? ' wild-face' : '');
-        cell.innerHTML = `<span class="face-die">${DICE_SYMBOLS[f]}</span>
+        const pips = (CARD_LAYOUTS[f] || []).map(p =>
+            `<span class="pip-mini${p.center ? ' center' : ''}" style="grid-column:${p.col};grid-row:${p.row}">♥</span>`
+        ).join('');
+        cell.innerHTML = `<div class="dice-card-mini">${pips}</div>
                       <span class="face-label"></span>
                       <span class="face-count">${reveal.face_counts[String(f)] ?? 0}</span>`;
         fc.appendChild(cell);
@@ -534,7 +539,7 @@ function showReveal(state) {
     } else {
         banner.className    = 'result-banner bidder-wins';
         verdict.textContent = `${reveal.winner}'s bid holds!`;
-        detail.textContent  = `${actual} ${FACE_NAMES[current_bid.face_value]} found — bid of ${current_bid.quantity} stands.`;
+        detail.textContent  = `${actual} × ${FACE_NAMES[current_bid.face_value]} found — bid of ${current_bid.quantity} stands.`;
     }
 
     const loserLine = document.getElementById('loser-line');
