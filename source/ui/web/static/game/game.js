@@ -612,6 +612,9 @@ function render(state) {
     const logBox = log.parentElement;
     const entries = [...(state.log || [])];
 
+    // Check if user is at (or near) the bottom before rebuilding
+    const isAtBottom = logBox.scrollHeight - logBox.scrollTop - logBox.clientHeight < 2;
+
     log.innerHTML = '';
     entries.forEach((entry, i) => {
         const li = document.createElement('li');
@@ -623,7 +626,14 @@ function render(state) {
     const spacer = document.createElement('li');
     spacer.className = 'spacer';
     log.appendChild(spacer);
-    logBox.scrollTop = logBox.scrollHeight;
+
+    // Only auto-scroll if the user was already at the bottom
+    if (isAtBottom) {
+        logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    // Always keep bid controls in sync with the current bid
+    enforceBidMin(state.current_bid);
 
     // Controls — enable only on human turn
     const isMyTurn = state.current_player
@@ -632,7 +642,6 @@ function render(state) {
     if (isMyTurn) {
         challengeBtn.disabled = !state.current_bid;
         bidBtn.disabled       = false;
-        enforceBidMin(state.current_bid);
     } else {
         challengeBtn.disabled = true;
         bidBtn.disabled       = true;
