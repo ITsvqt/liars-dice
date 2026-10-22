@@ -612,20 +612,6 @@ function render(state) {
     const logBox = log.parentElement;
     const entries = [...(state.log || [])];
 
-    // If reveal is complete, append result summary as extra lines
-    if (state.phase === 'reveal' && state.reveal && state.reveal.winner) {
-        const cb     = state.current_bid;
-        const actual = cb ? (state.reveal.face_counts[String(cb.face_value)] ?? 0) : 0;
-        if (state.reveal.challenge_valid) {
-            entries.push(`✓ Bluff! Only ${actual} × ${FACE_NAMES[cb?.face_value]} on table.`);
-            entries.push(`${state.reveal.winner} wins the challenge.`);
-        } else {
-            entries.push(`✗ Bid stands. ${actual} × ${FACE_NAMES[cb?.face_value]} found.`);
-            entries.push(`${state.reveal.winner}'s bid holds.`);
-        }
-        entries.push(`${state.reveal.loser} loses a die.${state.reveal.loser_eliminated ? ' Eliminated.' : ''}`);
-    }
-
     log.innerHTML = '';
     entries.forEach((entry, i) => {
         const li = document.createElement('li');
