@@ -31,14 +31,12 @@ git clone https://github.com/ITsvqt/liars-dice.git
 cd liars-dice
 
 # (Recommended) Create and activate a virtual environment:
+# Creation
+python -m venv .venv
+
+#Activation
 
 # Windows (Command Prompt):
-python -m venv .venv
-.venv\Scripts\activate
-
-#IF PowerShell is blocking the activation script.
-# Run
-cmd
 .venv\Scripts\activate.bat
 
 
