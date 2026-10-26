@@ -26,13 +26,19 @@ Liar's Dice is a hidden-information bluffing game. Every player secretly rolls f
 ### Installation
 
 ```bash
-# Clone the repo
-git clone https://github.com/your-username/pirate-dice.git
-cd pirate-dice
+# Clone the repository and navigate to the project directory:
+git clone https://github.com/ITsvqt/liars-dice.git
+cd liars-dice
 
-# (Recommended) Create a virtual environment
-python -m venv venv
-source venv/bin/activate        # On Windows: venv\Scripts\activate
+# (Recommended) Create and activate a virtual environment:
+
+# Windows (Command Prompt):
+python -m venv .venv
+.venv\Scripts\activate
+
+# macOS / Linux:
+python3 -m venv .venv
+source .venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -44,17 +50,14 @@ pip install -r requirements.txt
 ## 🎮 How to Play
 
 ```bash
-# Clone the repo
-git clone https://github.com/your-username/liars-dice.git
-cd source
-
 # Run the game
 python main.py
 ```
 
 On startup you will be asked:
-1. How many bot opponents you want (1–5)
-2. Whether to enable **Wild Ones** mode
+1. Whats your battle tag 
+2. How many bot opponents you want (1–4)
+3. Whether to enable **Wild Ones** mode
 
 Then the game begins. On your turn, you can:
 - **Bid** — announce a quantity and face value higher than the current bid
