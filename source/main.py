@@ -3,8 +3,7 @@ from runners.web_game_runner import WebGameRunner
 
 
 
-#TODO ADD PLAYER HAND AND DISPLAY FROM START IN WEB
-#TODO USE BETTER ICONS IN THE REVEAL POP UP
+
 IS_UI_WEB = True
 
 

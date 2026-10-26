@@ -27,11 +27,9 @@ class Game:
         self.players:  list[Player] = None       # all initial player
         self.player_circle: PlayerCircle = None  # active players
         self.wild_ones = None
-        self.human_player: HumanPlayer = None #! the idea was to display the hand of this player, but the refference ended up useless for now ( check the game loop if its not there, its useless)
+        self.human_player: HumanPlayer = None 
 
 
-        
-        
     def _set_up(self):
         config = self.ui.get_setup_vars()
         
@@ -101,8 +99,6 @@ class Game:
             loosing_player = self.player_circle.previous_player
             winning_player = player
             
-        #! remove after test
-        # loosing_player = player if res is False else self.player_circle.previous_player
         loosing_player.remove_die()
         
         #* Check for elmination

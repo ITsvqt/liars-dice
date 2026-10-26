@@ -228,6 +228,12 @@ class WebUI(GameUI):
         self.is_reveal_shown = False
         self.reveal_event.clear()
         
+        self.log.append("")
+        self.log.append("")
+        self.log.append("")
+
+
+        
         
     def show_winner(self, player: Player) -> bool:
         """Update UI to game end state"""
