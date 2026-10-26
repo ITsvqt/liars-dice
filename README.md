@@ -61,6 +61,7 @@ When enabled, the web UI starts a local server at http://127.0.0.1:8000
 
 ```bash
 # Run the game
+cd source
 python main.py
 ```
 
