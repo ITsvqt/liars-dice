@@ -118,9 +118,6 @@ class WebUI(GameUI):
         Should display current Bid and Dice_cnt\n
         Returns ("Challenge", None) | ("Bid", (face, quantity))"""
 
-        if not self.player_hand:
-            self.player_hand = player.values
-        
         self.move_event.clear()
         self.move_data = None
         self.move_event.wait()
@@ -151,6 +148,10 @@ class WebUI(GameUI):
         self.phase = "playing"
         self.round = round_num
         self.players = [p.to_dict() for p in active_players]
+        
+        #* Pass human player's hand to frontend at round start
+        human = next((p for p in active_players if not p.is_bot), None)
+        self.player_hand = human.values if human else []
         
     def show_turn_header(self, current_player: Player):
         self.current_player = current_player.name
