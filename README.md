@@ -16,8 +16,7 @@ Liar's Dice is a hidden-information bluffing game. Every player secretly rolls f
 
 ## ✨ Features
 
-- 🧑‍💻 **Human vs. Bot(s)** — play against 1 to 5 AI opponents
-- 🎯 **Configurable player count** — choose how many bots join the table
+- 🧑‍💻 **Human vs. Bot(s)** — play against 1 to 4 AI opponents
 - 🃏 **Wild Ones mode** — toggle the advanced rule where 1s count as any face
 - 🤖 **Smart bot AI** — bots use probability-aware logic to bid and bluff
 - 📜 **Full rule implementation** — bidding, challenging, elimination, round rotation
