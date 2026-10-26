@@ -36,6 +36,12 @@ cd liars-dice
 python -m venv .venv
 .venv\Scripts\activate
 
+#IF PowerShell is blocking the activation script.
+# Run
+cmd
+.venv\Scripts\activate.bat
+
+
 # macOS / Linux:
 python3 -m venv .venv
 source .venv/bin/activate
