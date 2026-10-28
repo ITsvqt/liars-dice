@@ -111,8 +111,7 @@ class WebUI(GameUI):
     def ask_player_move(self,
         current_bid: Bid,
         player: Player,
-        dice_cnt: int,
-        wild_ones: bool = False
+        dice_cnt: int
         )-> tuple[str, tuple[int, int] | None]:
         """UI should limit player for making Challenge move when there is no initial Bid\n
         Should display current Bid and Dice_cnt\n
@@ -130,12 +129,12 @@ class WebUI(GameUI):
 
 
 
-    def show_prestart(self, players: list[Player], wild_ones: bool):
+    def show_prestart(self, players: list[Player]):
         """Show initial game state"""
         self.players = [p.to_dict() for p in players]
     
     
-    def show_round(self, round_num: int, active_players: list[Player], dice_cnt:int, wild_ones: bool):
+    def show_round(self, round_num: int, active_players: list[Player], dice_cnt:int):
         """Update UI to round start state"""
         
         #* Reset from previous round
@@ -172,8 +171,7 @@ class WebUI(GameUI):
         self,
         active_players: list[Player],
         face_counts: Counter,
-        current_bid: Bid,
-        wild_ones: bool
+        current_bid: Bid
         ):
         """Update UI to round end state"""
         

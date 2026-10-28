@@ -8,13 +8,20 @@ Built as a submission for a programming challenge. The goal: not just to impleme
 
 ---
 
+## IMPORTANT NOTE
+> This repository is built for and requires **Python 3.14.3**
+>
+> **In Progress:** Backwards compatibility for older versions (down to **Python 3.8**) is currently under active development.
+
+---
+
 ## What Is Liar's Dice?
 
 Liar's Dice is a hidden-information bluffing game. Every player secretly rolls five dice, then players take turns making bold claims about the total dice on the table — knowing full well they might be lying. When someone calls "Liar!", the dice are revealed. Whoever was wrong loses a die. Last one standing wins.
 
 ---
 
-## ✨ Features
+## Features
 
 - 🧑‍💻 **Human vs. Bot(s)** — play against 1 to 4 AI opponents
 - 🃏 **Wild Ones mode** — toggle the advanced rule where 1s count as any face
@@ -76,7 +83,7 @@ Then the game begins. On your turn, you can:
 
 ---
 
-## 📐 Rules Summary
+## Rules Summary
 
 | Situation | Result |
 |---|---|

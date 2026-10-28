@@ -66,6 +66,7 @@ def get_constants():
     
     
 # *** SEND GAME SETTINGS ***
+
 @app.post("/setup")
 def send_game_setup(data: dict = Body()):
     
@@ -114,6 +115,7 @@ def restart():
     web_ui.restart_data = True
     web_ui.restart_event.set()
     return {"success": True}
+
 
 @app.get("/quit")
 def quit():

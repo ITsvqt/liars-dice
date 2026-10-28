@@ -50,7 +50,7 @@ class Game:
             self.cnt_round: int = 0
             self.ui.initiate()
             self._set_up()
-            self.ui.show_prestart(self.players, self.wild_ones)
+            self.ui.show_prestart(self.players)
             
             while not LiarsDiceRules.is_game_over(self.player_circle):
                 self._play_round()
@@ -70,7 +70,7 @@ class Game:
         dice_cnt = sum(dice_face_cnt.values())
         current_bid = None        
         
-        self.ui.show_round(self.cnt_round, active_players, dice_cnt, self.wild_ones)
+        self.ui.show_round(self.cnt_round, active_players, dice_cnt)
         
         #* Go around the circle, until someone Challenge
         while True:
@@ -87,7 +87,7 @@ class Game:
                 
             self.player_circle.advance()
             
-        self.ui.show_reveal(active_players, dice_face_cnt, current_bid, self.wild_ones)
+        self.ui.show_reveal(active_players, dice_face_cnt, current_bid)
         
         #* Determine the looser
         res = LiarsDiceRules.is_challenge_correct(current_bid, dice_face_cnt, self.wild_ones)
@@ -127,7 +127,7 @@ class Game:
                 if player.is_bot:
                     move = player.calc_turn(current_bid, dice_cnt, self.wild_ones)
                 else:
-                    move = self.ui.ask_player_move(current_bid, player, dice_cnt, self.wild_ones)
+                    move = self.ui.ask_player_move(current_bid, player, dice_cnt)
 
                 #* Early exit when move is "Challenge"        
                 if move[0] == "Challenge":
